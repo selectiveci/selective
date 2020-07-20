@@ -10,12 +10,12 @@ module AeTestCoverage
       end
     end
 
-    def write_code_coverage_artifact
+    def write_code_coverage_artifact(example)
       if AeTestCoverage.enabled?
         cleanup_stubs
-        test_filename = method(name_of_test).source_location[0]
+        test_filename = example.location.split(':').first
         FileUtils.mkdir_p(coverage_path)
-        f = File.open(coverage_file_name, 'w')
+        f = File.open(coverage_file_name(example), 'w')
         cleaned_coverage = {}.tap do |cleaned|
           AeTestCoverage.coverage_collectors.values.each do |coverage_collector|
             coverage_collector.covered_files.each do |covered_file, coverage_data|
@@ -34,16 +34,16 @@ module AeTestCoverage
       end
     end
 
-    def name_of_test
-      method_name
+    def name_of_test(example)
+      example.full_description.parameterize
     end
 
     def coverage_path
       AeTestCoverage.config.coverage_path
     end
 
-    def coverage_file_name
-      basename = "#{self.class.name}__#{name_of_test}.json".tr(' /', '__')
+    def coverage_file_name(example)
+      basename = "#{self.class.name}__#{name_of_test(example)}.json".tr(' /', '__')
       max_filename_length = 255
       basename = trim_front(basename, max_filename_length - coverage_path.length)
       File.join(coverage_path, basename)
@@ -54,8 +54,8 @@ module AeTestCoverage
     end
 
     def cleanup_stubs
-      File.unstub(:open)
-      File.unstub(:directory?)
+      # File.unstub(:open)
+      # File.unstub(:directory?)
     end
   end
 end

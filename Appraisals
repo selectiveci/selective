@@ -2,7 +2,7 @@
 
 case RUBY_VERSION
 
-when '2.6.3'
+when '2.6.6'
   appraise "ruby-#{RUBY_VERSION}_rails522" do
     gem 'rails', '~> 5.2.2'
   end

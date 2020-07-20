@@ -23,6 +23,8 @@ module AeTestCoverage
           {}.tap do |coverage_data|
             @covered_model_collection.each do |model|
               file = ModelFileFinder.new.file_path(model)
+              next if file.nil?
+
               coverage_data[file] = data
             end
           end
