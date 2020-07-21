@@ -5,38 +5,44 @@ module AeTestCoverage
     class RubyCoverageCollector
       @@initialized = false
 
-      def initialize
+      attr_reader :root_path
+
+      def initialize(root_path = Dir.pwd)
         unless @@initialized
           require 'coverage'
-          Coverage.start(oneshot_lines: true, methods: true)
+          Coverage.start unless Coverage.running?
           @@initialized = true
         end
+        @root_path = root_path
       end
 
       def on_start
-        Coverage.result(clear: true)
+        @before = Coverage.peek_result
       end
 
       def covered_files
-        coverage = Coverage.result(clear: true)
+        after = Coverage.peek_result
+        coverage = detect(before, after)
         {}.tap do |coverage_data|
           coverage.each do |file, data|
             next if AeTestCoverage.exclude_file?(file)
 
-            called_methods = data[:methods].select { |_, call_count| call_count > 0 }
-            oneshot_lines = reject_oneshot_lines_from_methods(called_methods, data[:oneshot_lines])
-            coverage_data[file] = {methods: called_methods, oneshot_lines: oneshot_lines} unless called_methods.empty? && oneshot_lines.empty?
+            coverage_data[file] = true
           end
         end
       end
 
       private
 
-      def reject_oneshot_lines_from_methods(methods, oneshot_lines)
-        return [] if oneshot_lines.blank?
+      attr_reader :before
 
-        ranges_covered_by_called_methods = methods.keys.map { |method_data| method_data[2]..method_data[4] }
-        oneshot_lines.reject { |line| ranges_covered_by_called_methods.any? { |range| range.include?(line) } }
+      def detect(before, after)
+        filter after.reject { |file_name, after_coverage| before[file_name] == after_coverage }.keys
+      end
+
+      def filter(paths)
+        paths
+          .select { |file_name| file_name.start_with?(root_path) && !file_name.include?(root_path + '/spec') }
       end
     end
   end
