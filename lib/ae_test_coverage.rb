@@ -4,7 +4,6 @@ require 'rails/railtie'
 require 'active_record'
 
 require 'ae_test_coverage/version'
-require 'ae_test_coverage/test_coverage_methods'
 
 require 'ae_test_coverage/collectors/ruby_coverage_collector'
 require 'ae_test_coverage/collectors/active_record/association_collector'
@@ -14,6 +13,8 @@ require 'ae_test_coverage/collectors/action_view/asset_tag_collector'
 require 'ae_test_coverage/collectors/action_view/rendered_template_collector'
 require 'ae_test_coverage/collectors/webpacker/webpacker_app_collector'
 require 'ae_test_coverage/collectors/sprockets_asset_collector'
+require 'ae_test_coverage/collector'
+require 'ae_test_coverage/storage'
 
 module AeTestCoverage
   class Config
@@ -21,8 +22,9 @@ module AeTestCoverage
     attr_accessor :webpacker_app_locations
     attr_accessor :file_exclusion_check
     attr_accessor :enable_check
-    attr_accessor :coverage_path
     attr_accessor :sprockets_asset_collector_class
+    attr_accessor :coverage_path
+    attr_accessor :api_key
 
     def initialize
       @enabled_collector_classes = [
@@ -34,16 +36,17 @@ module AeTestCoverage
         AeTestCoverage::Collectors::ActionView::AssetTagCollector,
         AeTestCoverage::Collectors::Webpacker::WebpackerAppCollector
       ]
-      @webpacker_app_locations = []
+      @webpacker_app_locations = [File.join('app', 'javascript')]
       @file_exclusion_check = Proc.new { |file| false }
-      @enable_check = Proc.new { false }
-      @coverage_path = './coverage'
+      @enable_check = Proc.new { !ENV['TEST_COVERAGE_ENABLED'].nil? }
       @sprockets_asset_collector_class = AeTestCoverage::Collectors::SprocketsAssetCollector
+      @coverage_path = Pathname.new('/tmp/coverage-map.yml')
+      @config.api_key = ENV['AE_TEST_COVERAGE_API_KEY']
     end
   end
 
   class << self
-    attr_accessor :single_test_coverage_enabled, :coverage_collectors
+    attr_accessor :single_test_coverage_enabled, :coverage_collectors, :collector
 
     def configure
       @config ||= Config.new
@@ -56,11 +59,19 @@ module AeTestCoverage
 
     def initialize_collectors
       if enabled?
-        @coverage_collectors = {}
-        config.enabled_collector_classes.each do |coverage_collector_class|
-          coverage_collectors[coverage_collector_class] = coverage_collector_class.new
+        @collector = AeTestCoverage::Collector.new(config)
+
+        RSpec.configure do |config|
+          config.before(:example) { AeTestCoverage.collector.start_recording_code_coverage }
+          config.after(:example) { |example| AeTestCoverage.collector.write_code_coverage_artifact(example) }
+
+          config.after(:suite) { |suite| AeTestCoverage.collector.finalize(suite) }
         end
       end
+    end
+
+    def coverage_collectors
+      @collector.coverage_collectors
     end
 
     def start_coverage
@@ -71,12 +82,12 @@ module AeTestCoverage
       end
     end
 
-    def exclude_file?(file)
-      AeTestCoverage.config.file_exclusion_check.call(file)
-    end
-
     def enabled?
       AeTestCoverage.config.enable_check.call
+    end
+
+    def exclude_file?(file)
+      AeTestCoverage.config.file_exclusion_check.call(file)
     end
   end
 end
