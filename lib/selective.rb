@@ -41,7 +41,7 @@ module Selective
       @enable_check = Proc.new { !ENV['TEST_COVERAGE_ENABLED'].nil? }
       @sprockets_asset_collector_class = Selective::Collectors::SprocketsAssetCollector
       @coverage_path = Pathname.new('/tmp/coverage-map.yml')
-      @api_key = ENV['AE_TEST_COVERAGE_API_KEY']
+      @api_key = ENV['SELECTIVE_API_KEY']
     end
   end
 

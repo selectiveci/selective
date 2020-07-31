@@ -4,8 +4,8 @@
 require 'net/http'
 require 'json'
 
-API_KEY = ENV.fetch('AE_TEST_COVERAGE_API_KEY') do
-  puts 'API key is required. Example `export AE_TEST_COVERAGE_API_KEY=your-api-key`'
+API_KEY = ENV.fetch('SELECTIVE_API_KEY') do
+  puts 'API key is required. Example `export SELECTIVE_API_KEY=your-api-key`'
   exit
 end
 
