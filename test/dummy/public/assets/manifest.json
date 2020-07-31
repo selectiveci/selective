@@ -1,9 +1,0 @@
-{
-  "entrypoints": {
-    "foo": {
-      "js": [
-        "/assets/webpacker/js/super.chunk.js"
-      ]
-    }
-  }
-}
