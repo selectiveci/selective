@@ -42,12 +42,12 @@ module Selective
       return if map.nil?
       map_storage.dump(map) if map.size.positive?
       data = Selective::Storage.load(config.coverage_path)
-      call_graph_data = Hash[data.map {|k, v| [k, v.keys.map { |f| f.sub("#{Rails.root}/", '') }] }]
-      git_branch = `git rev-parse --abbrev-ref HEAD`.gsub("\n", '')
-      git_ref = `git rev-parse HEAD`.gsub("\n", '')
+      call_graph_data = Hash[data.map { |k, v| [k, v.keys.map { |f| f.sub("#{Rails.root}/", "") }] }]
+      git_branch = `git rev-parse --abbrev-ref HEAD`.delete("\n")
+      git_ref = `git rev-parse HEAD`.delete("\n")
 
       uri = URI.parse("http://host.docker.internal:3000/api/v1/call_graphs")
-      headers = {'Content-Type': 'application/json', 'X-API-KEY' => config.api_key}
+      headers = {:'Content-Type' => "application/json", "X-API-KEY" => config.api_key}
       request_body = {
         call_graph_data: call_graph_data,
         git_branch: git_branch,

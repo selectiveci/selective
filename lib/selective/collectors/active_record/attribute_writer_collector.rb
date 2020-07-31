@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-require 'selective/collectors/active_record/model_collector'
-require 'selective/collectors/active_record/attribute_writer_helper'
+require "selective/collectors/active_record/model_collector"
+require "selective/collectors/active_record/attribute_writer_helper"
 
 module Selective
   module Collectors
     module ActiveRecord
       class AttributeWriterCollector < ModelCollector
-
         private
 
         def set_hook

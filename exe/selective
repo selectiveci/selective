@@ -1,18 +1,18 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'net/http'
-require 'json'
+require "net/http"
+require "json"
 
-API_KEY = ENV.fetch('SELECTIVE_API_KEY') do
-  puts 'API key is required. Example `export SELECTIVE_API_KEY=your-api-key`'
+API_KEY = ENV.fetch("SELECTIVE_API_KEY") {
+  puts "API key is required. Example `export SELECTIVE_API_KEY=your-api-key`"
   exit
-end
+}
 
 HOST = "http://host.docker.internal:3000"
 
 uri = URI.parse("#{HOST}/api/v1/repository")
-headers = {'Content-Type': 'application/json', 'X-API-KEY' => API_KEY}
+headers = {:'Content-Type' => "application/json", "X-API-KEY" => API_KEY}
 
 # Create the HTTP objects
 http = Net::HTTP.new(uri.host, uri.port)
@@ -24,12 +24,10 @@ response = http.request(request)
 body = JSON.parse(response.body)
 git_branch = body["default_branch_name"]
 
-
-
 diff = `git diff #{git_branch}`
 
 uri = URI.parse("#{HOST}/api/v1/call_graphs/tests_from_diff")
-headers = {'Content-Type': 'application/json', 'X-API-KEY' => API_KEY}
+headers = {:'Content-Type' => "application/json", "X-API-KEY" => API_KEY}
 
 request_body = {
   git_branch: git_branch,
@@ -45,4 +43,4 @@ request.body = request_body.to_json
 response = http.request(request)
 body = JSON.parse(response.body)
 
-puts body['tests'].join(' ')
+puts body["tests"].join(" ")

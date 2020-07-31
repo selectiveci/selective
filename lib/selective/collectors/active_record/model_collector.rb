@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
-require 'selective/collectors/active_record/model_file_finder'
+require "selective/collectors/active_record/model_file_finder"
 
 module Selective
   module Collectors
     module ActiveRecord
       class ModelCollector
-
         def initialize
           set_hook
         end
@@ -33,7 +32,7 @@ module Selective
         private
 
         def set_hook
-          raise 'Not Implemented'
+          raise "Not Implemented"
           ActiveSupport.on_load(:active_record) do
             raise "helper_module is not defined" unless @@helper_module.present?
             include @@helper_module
