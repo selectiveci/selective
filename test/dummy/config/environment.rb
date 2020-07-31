@@ -4,4 +4,4 @@
 require File.expand_path('application', __dir__)
 
 # Initialize the Rails application.
-AeTestCoverageDummyApp::Application.initialize!
+SelectiveDummyApp::Application.initialize!

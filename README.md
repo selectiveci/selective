@@ -1,4 +1,4 @@
-# AeTestCoverage
+# Selective
 
 Tools for collecting per test code coverage for ruby and rails applications
 
@@ -7,7 +7,7 @@ Tools for collecting per test code coverage for ruby and rails applications
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ae_test_coverage'
+gem 'selective'
 ```
 
 And then execute:
@@ -16,7 +16,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install ae_test_coverage
+    $ gem install selective
 
 ## Usage
 
@@ -28,7 +28,7 @@ beginning of testing.
 ```ruby
     require 'test_coverage'
     
-    AeTestCoverage.configure do |config|
+    Selective.configure do |config|
       # Setup a way to conditionally enable per test coverage collection
       config.enable_check = Proc.new { !ENV['TEST_COVERAGE_ENABLED'].nil? }
     
@@ -38,13 +38,13 @@ beginning of testing.
       # Decalre which coverage types should be enabled for collection
       # By default all collerctors are enabled
       config.enabled_collector_classes = [
-        AeTestCoverage::Collectors::RubyCoverageCollector,
-        AeTestCoverage::Collectors::ActiveRecord::AssociationCollector,
-        AeTestCoverage::Collectors::ActiveRecord::AttributeWriterCollector,
-        AeTestCoverage::Collectors::ActiveRecord::AttributeReaderCollector,
-        AeTestCoverage::Collectors::ActionView::RenderedTemplateCollector,
-        AeTestCoverage::Collectors::ActionView::AssetTagCollector,
-        AeTestCoverage::Collectors::Webpacker::WebpackerAppCollector
+        Selective::Collectors::RubyCoverageCollector,
+        Selective::Collectors::ActiveRecord::AssociationCollector,
+        Selective::Collectors::ActiveRecord::AttributeWriterCollector,
+        Selective::Collectors::ActiveRecord::AttributeReaderCollector,
+        Selective::Collectors::ActionView::RenderedTemplateCollector,
+        Selective::Collectors::ActionView::AssetTagCollector,
+        Selective::Collectors::Webpacker::WebpackerAppCollector
       ]
     
       # Set the location where coverage files will be written 
@@ -59,9 +59,9 @@ beginning of testing.
     
     # Initialize the coverage collectors which will setup any hooks that are
     # needed to collect coverage data 
-    AeTestCoverage.initialize_collectors
+    Selective.initialize_collectors
     
-    include AeTestCoverage::TestCoverageMethods
+    include Selective::TestCoverageMethods
     
     # For minitest add setup and tear down steps that write the coverage
     # data after each test finishes running 

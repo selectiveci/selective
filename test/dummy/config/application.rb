@@ -11,16 +11,16 @@ require 'active_record/railtie'
 Bundler.reset!
 Bundler.require(*Rails.groups(assets: %w[development test]))
 
-require "ae_test_coverage"
+require "selective"
 
-`mysql -h 127.0.0.1 -uroot -e "DROP DATABASE IF EXISTS AeTestCoveragedummy_test; CREATE DATABASE IF NOT EXISTS AeTestCoveragedummy_test;"`
+`mysql -h 127.0.0.1 -uroot -e "DROP DATABASE IF EXISTS Selectivedummy_test; CREATE DATABASE IF NOT EXISTS Selectivedummy_test;"`
 
-module AeTestCoverageDummyApp
+module SelectiveDummyApp
   class Application < Rails::Application
     config.root = File.expand_path('../', __dir__)
 
     def name
-      "AeTestCoveragedummy"
+      "Selectivedummy"
     end
   end
 end
