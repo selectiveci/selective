@@ -9,7 +9,7 @@ module Selective
 
       def initialize(root_path = Dir.pwd)
         unless @@initialized
-          require 'coverage'
+          require "coverage"
           Coverage.start unless Coverage.running?
           @@initialized = true
         end
@@ -42,7 +42,7 @@ module Selective
 
       def filter(paths)
         paths
-          .select { |file_name| file_name.start_with?(root_path) && !file_name.include?(root_path + '/spec') }
+          .select { |file_name| file_name.start_with?(root_path) && !file_name.include?(root_path + "/spec") }
       end
     end
   end

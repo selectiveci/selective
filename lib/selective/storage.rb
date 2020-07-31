@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'yaml'
+require "yaml"
 
 module Selective
   class Storage
@@ -18,9 +18,9 @@ module Selective
       def load(path)
         raise NoFilesFoundError, "No file exists #{path}" unless path.exist?
 
-        examples = path.read.split("---\n").reject(&:empty?).map do |yaml|
+        examples = path.read.split("---\n").reject(&:empty?).map { |yaml|
           YAML.safe_load(yaml, [Symbol])
-        end
+        }
 
         examples.inject(&:merge!)
       end
@@ -43,7 +43,7 @@ module Selective
     # @param [Hash] data to write to storage file
     def dump(data)
       path.dirname.mkpath
-      path.open('a') { |f| f.write YAML.dump(data) }
+      path.open("a") { |f| f.write YAML.dump(data) }
     end
   end
 end

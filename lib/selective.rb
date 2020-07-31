@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-require 'rails/railtie'
-require 'active_record'
+require "rails/railtie"
+require "active_record"
 
-require 'selective/version'
+require "selective/version"
 
-require 'selective/collectors/ruby_coverage_collector'
-require 'selective/collectors/active_record/association_collector'
-require 'selective/collectors/active_record/attribute_reader_collector'
-require 'selective/collectors/active_record/attribute_writer_collector'
-require 'selective/collectors/action_view/asset_tag_collector'
-require 'selective/collectors/action_view/rendered_template_collector'
-require 'selective/collectors/webpacker/webpacker_app_collector'
-require 'selective/collectors/sprockets_asset_collector'
-require 'selective/collector'
-require 'selective/storage'
+require "selective/collectors/ruby_coverage_collector"
+require "selective/collectors/active_record/association_collector"
+require "selective/collectors/active_record/attribute_reader_collector"
+require "selective/collectors/active_record/attribute_writer_collector"
+require "selective/collectors/action_view/asset_tag_collector"
+require "selective/collectors/action_view/rendered_template_collector"
+require "selective/collectors/webpacker/webpacker_app_collector"
+require "selective/collectors/sprockets_asset_collector"
+require "selective/collector"
+require "selective/storage"
 
 module Selective
   class Config
@@ -36,12 +36,12 @@ module Selective
         Selective::Collectors::ActionView::AssetTagCollector,
         Selective::Collectors::Webpacker::WebpackerAppCollector
       ]
-      @webpacker_app_locations = [File.join('app', 'javascript')]
-      @file_exclusion_check = Proc.new { |file| false }
-      @enable_check = Proc.new { !ENV['TEST_COVERAGE_ENABLED'].nil? }
+      @webpacker_app_locations = [File.join("app", "javascript")]
+      @file_exclusion_check = proc { |file| false }
+      @enable_check = proc { !ENV["TEST_COVERAGE_ENABLED"].nil? }
       @sprockets_asset_collector_class = Selective::Collectors::SprocketsAssetCollector
-      @coverage_path = Pathname.new('/tmp/coverage-map.yml')
-      @api_key = ENV['SELECTIVE_API_KEY']
+      @coverage_path = Pathname.new("/tmp/coverage-map.yml")
+      @api_key = ENV["SELECTIVE_API_KEY"]
     end
   end
 
@@ -75,7 +75,7 @@ module Selective
     end
 
     def start_coverage
-      if self.enabled?
+      if enabled?
         coverage_collectors.values.each do |coverage_collector|
           coverage_collector.on_start
         end

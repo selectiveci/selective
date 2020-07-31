@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'selective/collectors/webpacker/helpers'
+require "selective/collectors/webpacker/helpers"
 
 module Selective
   module Collectors
@@ -28,7 +28,7 @@ module Selective
         def covered_files
           {}.tap do |coverage_data|
             @covered_globs.each do |glob_pattern|
-              coverage_data[glob_pattern] = { glob: true }
+              coverage_data[glob_pattern] = {glob: true}
             end
           end
         end

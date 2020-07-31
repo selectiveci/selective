@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'selective/collectors/action_view/asset_tag_helper'
+require "selective/collectors/action_view/asset_tag_helper"
 
 module Selective
   module Collectors
@@ -27,9 +27,9 @@ module Selective
 
         def covered_files
           test_assets = Set.new(
-            @covered_assets_collection.flat_map do |asset_path|
+            @covered_assets_collection.flat_map { |asset_path|
               Selective.config.sprockets_asset_collector_class.new(asset_path).collect
-            end
+            }
           )
           {}.tap do |coverage_data|
             test_assets.to_a.map do |asset_uri|
