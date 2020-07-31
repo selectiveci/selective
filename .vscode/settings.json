@@ -1,0 +1,10 @@
+{
+  "ruby.format": "standard",
+  "ruby.useBundler": true,
+  "ruby.lint": {
+    "standard": true
+  },
+  "ruby.useLanguageServer": true,
+  "solargraph.diagnostics": false,
+  "solargraph.formatting": false
+}
