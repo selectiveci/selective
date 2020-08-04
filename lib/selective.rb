@@ -46,7 +46,7 @@ module Selective
   end
 
   class << self
-    attr_accessor :single_test_coverage_enabled, :coverage_collectors, :collector
+    attr_accessor :coverage_collectors, :collector
 
     def configure
       @config ||= Config.new
