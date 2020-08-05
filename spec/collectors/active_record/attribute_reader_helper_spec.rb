@@ -5,7 +5,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderHelper do
 
   before do
     allow(Selective).to receive(:coverage_collectors).and_return({
-      described_class => mock_collector
+      described_class.parent::AttributeReaderCollector => mock_collector
     })
 
     Selective.start_coverage
