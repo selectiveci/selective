@@ -19,7 +19,7 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
       end
     end
 
-    context 'when a view is extended with Webpacker::Helper'do
+    context 'when selective is not enabled'do
       let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
       let(:mock_collector) { double }
 
@@ -30,7 +30,7 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
       end
     end
 
-    context 'when a view is extended with Selective::Collectors::Webpacker::Helpers' do
+    context 'when selective is enabled' do
       let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
       let(:mock_collector) { double }
 
