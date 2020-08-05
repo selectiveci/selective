@@ -1,0 +1,25 @@
+name: CI
+on: [push]
+
+env:
+  GIT_BRANCH: ${{ github.ref }}
+  GIT_COMMIT_SHA: ${{ github.sha }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: No Docs
+      run: "echo 'gem: --no-document' >> ~/.gemrc"
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.6
+        bundler-cache: true
+    - name: RubyGems Update
+      run: gem update --system
+    - name: Bundle Install
+      run: bundle install
+    - name: RSpec
+      run: |
+        bundle exec rspec --format progress
