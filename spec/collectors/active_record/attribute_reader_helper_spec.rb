@@ -29,6 +29,14 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderHelper do
         a_dummy.extend(described_class)
         a_dummy.attr1
       end
+
+      it 'is not called on attributes that don\'t exist' do
+        expect(mock_collector).not_to receive(:add_covered_models)
+
+        a_dummy = ADummy.new
+        a_dummy.extend(described_class)
+        expect { a_dummy.attr2 }.to raise_error(NoMethodError)
+      end
     end
   end
 end
