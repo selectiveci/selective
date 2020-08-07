@@ -33,7 +33,7 @@ RSpec.describe Selective::Storage do
         let(:path) { Pathname.new('does-not-exist.yml') }
 
         it 'raises a NoFilesFoundError' do
-          expect { subject.load(path) }.to raise_error(Selective::Storage::NoFilesFoundError)
+          expect { subject }.to raise_error(Selective::Storage::NoFilesFoundError)
         end
       end
 
