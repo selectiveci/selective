@@ -76,7 +76,7 @@ RSpec.describe Selective::Storage do
     let(:data) { { 'frog' => 'cat' } }
 
     context 'when subdirectories do not exist' do
-      before { FileUtils.rm_r(path.dirname) }
+      before { FileUtils.rm_r(path.dirname) if path.dirname.exist? }
 
       it 'creates them' do
         expect { subject.dump(data) }.to change { path.dirname.exist? }.from(false).to(true)
