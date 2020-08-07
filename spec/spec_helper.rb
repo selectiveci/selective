@@ -28,3 +28,9 @@ RSpec.configure do |config|
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
 end
+
+Selective.module_eval do
+  def self.call_dummy?
+    false
+  end
+end

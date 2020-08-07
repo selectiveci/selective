@@ -3,6 +3,20 @@ require "spec_helper"
 RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderHelper do
   let(:collector) { Selective.coverage_collectors[Selective::Collectors::ActiveRecord::AttributeReaderCollector] }
 
+  module AttributeReaderHelperDummy
+    def _read_attribute(attr_name)
+      if Selective.call_dummy?
+        method(__method__).super_method.super_method.call(attr_name)
+      else
+        super
+      end
+    end
+  end
+
+  before do
+    Selective.coverage_collectors[described_class] = collector
+  end
+
   before(:each, :full_setup) do
     allow(Selective).to receive(:enabled?).and_return true
     allow(Selective).to receive(:initialize_rspec_hooks)
@@ -10,13 +24,20 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderHelper do
   end
 
   describe "#add_covered_models" do
-    context 'when selective is not enabled' do
+    context 'when selective is disabled' do
       let(:collector) { double }
 
       before do
-        allow(Selective).to receive(:coverage_collectors).and_return({
-          described_class.parent::AttributeReaderCollector => collector
-        })
+        allow_any_instance_of(Selective::Collectors::ActiveRecord::AttributeReaderCollector).to receive(:set_hook) do
+          ActiveSupport.on_load(:active_record) do
+            prepend AttributeReaderHelperDummy
+          end
+        end
+
+        allow(Selective).to receive(:enabled?).and_return true
+        allow(Selective).to receive(:call_dummy?).and_return true
+        allow(Selective).to receive(:initialize_rspec_hooks)
+        Selective.initialize_collectors
       end
 
       it 'is not called' do

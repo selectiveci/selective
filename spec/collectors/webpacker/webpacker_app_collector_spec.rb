@@ -4,21 +4,43 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
   class DummyView < ActionView::Base
   end
 
-  describe "#add_covered_globs" do
-    let(:dummy_js_dir) { 'spec/dummy/app/javascript' }
+  module WebpackerHelperDummy
+    def javascript_packs_with_chunks_tag(*names, **options)
+      if Selective.call_dummy?
+        method(__method__).super_method.super_method.call(names, options)
+      else
+        super
+      end
+    end
 
+    def javascript_app_home(name)
+      if Selective.call_dummy?
+        method(__method__).super_method.super_method.call(name)
+      else
+        super
+      end
+    end
+  end
+
+  describe "#add_covered_globs" do
     context 'when selective is disabled' do
       let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
-      let(:collector) { double }
 
       before do
-        allow(Selective).to receive(:coverage_collectors).and_return({
-          described_class => collector
-        })
+        allow_any_instance_of(Selective::Collectors::Webpacker::WebpackerAppCollector).to receive(:initialize) do
+          ActiveSupport.on_load(:action_view) do
+            prepend WebpackerHelperDummy
+          end
+        end
+
+        allow(Selective).to receive(:enabled?).and_return true
+        allow(Selective).to receive(:call_dummy?).and_return true
+        allow(Selective).to receive(:initialize_rspec_hooks)
+        Selective.initialize_collectors
       end
 
       it 'is not called' do
-        expect(collector).not_to receive(:add_covered_globs)
+        expect_any_instance_of(::Webpacker::Helper).to receive(:javascript_packs_with_chunks_tag)
         view.extend(::Webpacker::Helper)
         view.render(inline: '<% javascript_packs_with_chunks_tag "foo" %>')
       end
@@ -27,22 +49,20 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
     context 'when selective is enabled', :full_setup do
       let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
       let(:collector) { double }
+      let(:dummy_js_dir) { 'spec/dummy/app/javascript' }
       
       before do
         allow(Selective).to receive(:enabled?).and_return true
         allow(Selective).to receive(:initialize_rspec_hooks)
+        allow_any_instance_of(Selective::Config).to receive(:webpacker_app_locations).and_return([dummy_js_dir])
   
         Selective.initialize_collectors
-        Selective.configure do |config|
-          config.webpacker_app_locations = [dummy_js_dir]
-        end
   
         Selective.coverage_collectors[described_class] = collector
       end
 
       it 'is called' do
         expect(collector).to receive(:add_covered_globs).with("#{dummy_js_dir}/foo/src/**.{scss,css,js}", "#{dummy_js_dir}/foo/package*.json")
-        view.extend(Selective::Collectors::Webpacker::Helpers)
         view.render(inline: '<% javascript_packs_with_chunks_tag "foo" %>')
       end
     end
