@@ -33,10 +33,10 @@ module Selective
 
         def set_hook
           raise "Not Implemented"
-          ActiveSupport.on_load(:active_record) do
-            raise "helper_module is not defined" unless @@helper_module.present?
-            include @@helper_module
-          end
+          # ActiveSupport.on_load(:active_record) do
+          #   raise "helper_module is not defined" unless @@helper_module.present?
+          #   include @@helper_module
+          # end
         end
 
         def data

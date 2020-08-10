@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.summary = "Tools for collecting code coverage from tests"
   spec.description = "Tools for collecting code coverage and sending them to SelectiveCI"
 
-  spec.files = spec.files = Dir.chdir(File.expand_path(__dir__)) do
+  spec.files = Dir.chdir(File.expand_path(__dir__)) do
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   end
   spec.bindir = "exe"

@@ -149,26 +149,26 @@ RSpec.describe Selective::Collector do
     end
   end
 
-  context '#check_dump_threshold' do
+  context "#check_dump_threshold" do
     subject { collector.check_dump_threshold }
 
     before do
       allow(collector.map_storage).to receive(:dump)
     end
 
-    context 'when the map.size >= DUMP_THRESHOLD' do
+    context "when the map.size >= DUMP_THRESHOLD" do
       before do
-        collector.map = (0..9).map {|v| {v: {}} }
+        collector.map = (0..9).map { |v| {v: {}} }
       end
 
-      it 'dumps the map' do
+      it "dumps the map" do
         expect { subject }.to change { collector.map }.to({})
         expect(collector.map_storage).to have_received(:dump)
       end
     end
 
-    context 'when the map.size has not met the threshold' do
-      it 'does nothing' do
+    context "when the map.size has not met the threshold" do
+      it "does nothing" do
         expect { subject }.not_to change { collector.map }
         expect(collector.map_storage).not_to have_received(:dump)
       end

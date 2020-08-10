@@ -12,7 +12,7 @@ Rails.application.configure do
   # Only eager load if running in CI. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that
   # preloads Rails for running tests, you may have to set it to true.
-  config.eager_load = ENV['CIRCLECI'].present?
+  config.eager_load = ENV["CIRCLECI"].present?
 
   # Randomize the order test cases are executed.
   config.active_support.test_order = :random

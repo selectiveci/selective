@@ -6,7 +6,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderHelper do
 
     def _read_attribute(attr_name)
       if Selective.call_dummy?
-        find_proper_method('ActiveRecord::AttributeMethods::Read#_read_attribute', method(__method__).super_method, attr_name)
+        find_proper_method("ActiveRecord::AttributeMethods::Read#_read_attribute", method(__method__).super_method, attr_name)
       else
         super
       end
@@ -21,7 +21,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderHelper do
   end
 
   describe "#add_covered_models" do
-    context 'when selective is disabled' do
+    context "when selective is disabled" do
       let(:collector) { double }
 
       before do
@@ -37,7 +37,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderHelper do
         Selective.initialize_collectors
       end
 
-      it 'is not called' do
+      it "is not called" do
         expect_any_instance_of(described_class).not_to receive(:_read_attribute)
 
         a_dummy = ADummy.new
@@ -45,15 +45,15 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderHelper do
       end
     end
 
-    context 'when selective is enabled', :full_setup do
-      it 'is called' do
+    context "when selective is enabled", :full_setup do
+      it "is called" do
         expect_any_instance_of(Selective::Collectors::ActiveRecord::AttributeReaderCollector).to receive(:add_covered_models).with(ADummy)
 
         a_dummy = ADummy.new
         a_dummy.attr1
       end
 
-      it 'is not called on attributes that don\'t exist' do
+      it "is not called on attributes that don't exist" do
         expect_any_instance_of(Selective::Collectors::ActiveRecord::AttributeReaderCollector).not_to receive(:add_covered_models)
 
         a_dummy = ADummy.new
