@@ -13,8 +13,8 @@ module Selective
     class << self
       # Loads map from given path
       #
-      # @param [String] path to map
-      # @return [Crystalball::ExecutionMap]
+      # @param [Pathname] path to map
+      # @return [Hash] of parsed YAML
       def load(path)
         raise NoFilesFoundError, "No file exists #{path}" unless path.exist?
 
@@ -28,7 +28,7 @@ module Selective
       private
     end
 
-    # @param [String] path to store execution map
+    # @param [Pathname] path to store execution map
     def initialize(path)
       @path = path
     end
