@@ -61,12 +61,15 @@ module Selective
       if enabled?
         @collector = Selective::Collector.new(config)
 
-        RSpec.configure do |config|
-          config.before(:example) { Selective.collector.start_recording_code_coverage }
-          config.after(:example) { |example| Selective.collector.write_code_coverage_artifact(example) }
+        initialize_rspec_hooks
+      end
+    end
 
-          config.after(:suite) { |suite| Selective.collector.finalize(suite) }
-        end
+    def initialize_rspec_hooks
+      RSpec.configure do |config|
+        config.before(:example) { Selective.collector.start_recording_code_coverage }
+        config.after(:example) { |example| Selective.collector.write_code_coverage_artifact(example) }
+        config.after(:suite) { |suite| Selective.collector.finalize(suite) }
       end
     end
 

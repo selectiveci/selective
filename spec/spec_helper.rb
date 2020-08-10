@@ -1,4 +1,7 @@
 require "factory_bot"
+require 'simplecov'
+
+SimpleCov.start 'rails'
 
 ENV["RAILS_ENV"] = "test"
 
@@ -24,4 +27,20 @@ RSpec.configure do |config|
   end
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
+end
+
+Selective.module_eval do
+  def self.call_dummy?
+    false
+  end
+end
+
+module DummyHelpers
+  def find_proper_method(name, method, *args)
+    if method.to_s.include?(name)
+      method.call(*args)
+    else
+      find_proper_method(name, method.super_method, args)
+    end
+  end
 end
