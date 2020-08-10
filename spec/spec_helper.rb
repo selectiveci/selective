@@ -36,11 +36,11 @@ Selective.module_eval do
 end
 
 module DummyHelpers
-  def find_proper_method(name, method, arg)
+  def find_proper_method(name, method, *args)
     if method.to_s.include?(name)
-      method.call(arg)
+      method.call(*args)
     else
-      find_proper_method(name, method.super_method, arg)
+      find_proper_method(name, method.super_method, args)
     end
   end
 end

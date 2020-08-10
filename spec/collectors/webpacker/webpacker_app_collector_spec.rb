@@ -5,17 +5,11 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
   end
 
   module WebpackerHelperDummy
+    include DummyHelpers
+
     def javascript_packs_with_chunks_tag(*names, **options)
       if Selective.call_dummy?
-        method(__method__).super_method.super_method.call(names, options)
-      else
-        super
-      end
-    end
-
-    def javascript_app_home(name)
-      if Selective.call_dummy?
-        method(__method__).super_method.super_method.call(name)
+        find_proper_method('Webpacker::Helper#javascript_packs_with_chunks_tag', method(__method__).super_method, names, options)
       else
         super
       end
