@@ -34,3 +34,13 @@ Selective.module_eval do
     false
   end
 end
+
+module DummyHelpers
+  def find_proper_method(name, method, arg)
+    if method.to_s.include?(name)
+      method.call(arg)
+    else
+      find_proper_method(name, method.super_method, arg)
+    end
+  end
+end
