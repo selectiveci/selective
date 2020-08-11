@@ -11,11 +11,11 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagCollector do
   before(:each, :init_view_and_add_assets) do
     view.extend(Selective::Collectors::ActionView::AssetTagHelper)
 
-    view.render(inline: '<% javascript_include_tag "foo" %>')
-    view.render(inline: '<% stylesheet_link_tag "foo" %>')
+    view.render(inline: "<% javascript_include_tag 'foo' %>")
+    view.render(inline: "<% stylesheet_link_tag 'foo' %>")
   end
 
-  describe '#initialize' do
+  describe "#initialize" do
     it "prepends helper module" do
       expect(DummyView.ancestors).to include(Selective::Collectors::ActionView::AssetTagHelper)
     end
@@ -34,8 +34,8 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagCollector do
     let(:covered_assets_collection) { Selective.coverage_collectors[described_class].instance_variable_get("@covered_assets_collection") }
 
     it "adds assets to @covered_assets_collection", :init_view_and_add_assets do
-      expect(covered_assets_collection).to include('foo.css')
-      expect(covered_assets_collection).to include('foo.js')
+      expect(covered_assets_collection).to include("foo.css")
+      expect(covered_assets_collection).to include("foo.js")
     end
   end
 
@@ -46,7 +46,7 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagCollector do
 
     before do
       allow(::Rails.application).to receive(:assets).and_return("foo.css" => sprocket_asset_double)
-      allow(sprocket_asset_double).to receive(:metadata).and_return(dependencies: ['bar.css', 'baz.css', 'nope.nada'])
+      allow(sprocket_asset_double).to receive(:metadata).and_return(dependencies: ["bar.css", "baz.css", "nope.nada"])
     end
 
     it "adds assets to @covered_assets_collection", :init_view_and_add_assets do
