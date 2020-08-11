@@ -1,9 +1,6 @@
 require "spec_helper"
 
 RSpec.describe Selective::Collectors::ActionView::AssetTagHelper do
-  class DummyView < ActionView::Base
-  end
-
   describe "#add_covered_assets" do
     before do
       @mock_collector = double

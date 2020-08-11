@@ -1,9 +1,6 @@
 require "spec_helper"
 
 RSpec.describe Selective::Collectors::ActionView::RenderedTemplateCollector do
-  class DummyView < ActionView::Base
-  end
-
   describe "#add_covered_templates" do
     context "when selective is not enabled" do
       it "is not called" do
