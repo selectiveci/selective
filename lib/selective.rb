@@ -46,7 +46,8 @@ module Selective
   end
 
   class << self
-    attr_accessor :coverage_collectors, :collector
+    attr_accessor :collector
+    attr_writer :coverage_collectors
 
     def configure
       @config ||= Config.new

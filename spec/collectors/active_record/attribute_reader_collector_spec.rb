@@ -9,13 +9,13 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderCollector do
   end
 
   describe "#set_hook" do
-    it 'includes helper in ActiveRecord::Base' do
+    it "includes helper in ActiveRecord::Base" do
       expect(::ActiveRecord::Base.included_modules).to include(Selective::Collectors::ActiveRecord::AttributeReaderHelper)
     end
   end
 
   describe "#data" do
-    it 'annotates #covered_files hash properly' do
+    it "annotates #covered_files hash properly" do
       a = ADummy.new
       a.attr1
 
