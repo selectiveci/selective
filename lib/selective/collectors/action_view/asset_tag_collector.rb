@@ -6,14 +6,9 @@ module Selective
   module Collectors
     module ActionView
       class AssetTagCollector
-        @@action_view_hook_set = false
-
         def initialize
-          unless @@action_view_hook_set
-            ActiveSupport.on_load(:action_view) do
-              prepend Selective::Collectors::ActionView::AssetTagHelper
-            end
-            @@action_view_hook_set = true
+          ActiveSupport.on_load(:action_view) do
+            prepend Selective::Collectors::ActionView::AssetTagHelper
           end
         end
 

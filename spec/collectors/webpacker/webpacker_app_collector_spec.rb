@@ -1,9 +1,6 @@
 require "spec_helper"
 
 RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
-  class DummyView < ActionView::Base
-  end
-
   module WebpackerHelperDummy
     include DummyHelpers
 
