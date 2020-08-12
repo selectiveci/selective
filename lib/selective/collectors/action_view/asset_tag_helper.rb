@@ -5,6 +5,7 @@ module Selective
     module ActionView
       module AssetTagHelper
         def javascript_include_tag(*sources)
+          # binding.pry
           Selective.coverage_collectors[AssetTagCollector].add_covered_assets(*js_sources(sources))
           super
         end

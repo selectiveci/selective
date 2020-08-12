@@ -1,6 +1,16 @@
 require "spec_helper"
 
 RSpec.describe Selective::Collectors::ActionView::AssetTagHelper do
+  module AssetTagHelperDummy
+    def javascript_include_tag(*sources)
+      super unless Selective.call_dummy?
+    end
+
+    def stylesheet_link_tag(*sources)
+      super unless Selective.call_dummy?
+    end
+  end
+
   describe "#add_covered_assets" do
     before do
       @mock_collector = double
@@ -11,8 +21,21 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagHelper do
       Selective.start_coverage
     end
 
-    context "when selective is not enabled" do
+    context "when selective is disabled" do
       let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
+
+      before do
+        allow_any_instance_of(Selective::Collectors::ActionView::AssetTagCollector).to receive(:initialize) do
+          ActiveSupport.on_load(:action_view) do
+            prepend AssetTagHelperDummy
+          end
+        end
+
+        allow(Selective).to receive(:enabled?).and_return true
+        allow(Selective).to receive(:call_dummy?).and_return true
+        allow(Selective).to receive(:initialize_rspec_hooks)
+        Selective.initialize_collectors
+      end
 
       it "is not called" do
         expect(@mock_collector).not_to receive(:add_covered_globs)
