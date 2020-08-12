@@ -1,7 +1,7 @@
 require "factory_bot"
-require 'simplecov'
+require "simplecov"
 
-SimpleCov.start 'rails'
+SimpleCov.start "rails"
 
 ENV["RAILS_ENV"] = "test"
 
