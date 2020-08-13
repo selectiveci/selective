@@ -13,6 +13,11 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
     end
   end
 
+  let(:dummy_js_dir) { "spec/dummy/app/javascript" }
+  let(:asset_glob) { "#{dummy_js_dir}/foo/src/**.{scss,css,js}" }
+  let(:package_glob) { "#{dummy_js_dir}/foo/package*.json" }
+  let(:collector) { Selective.coverage_collectors[described_class] }
+
   describe "#add_covered_globs" do
     context "when selective is disabled" do
       let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
@@ -39,8 +44,6 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
 
     context "when selective is enabled", :full_setup do
       let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
-      let(:collector) { double }
-      let(:dummy_js_dir) { "spec/dummy/app/javascript" }
 
       before do
         allow(Selective).to receive(:enabled?).and_return true
@@ -48,14 +51,37 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
         allow_any_instance_of(Selective::Config).to receive(:webpacker_app_locations).and_return([dummy_js_dir])
 
         Selective.initialize_collectors
-
-        Selective.coverage_collectors[described_class] = collector
+        Selective.start_coverage
       end
 
       it "is called" do
-        expect(collector).to receive(:add_covered_globs).with("#{dummy_js_dir}/foo/src/**.{scss,css,js}", "#{dummy_js_dir}/foo/package*.json")
+        expect(collector).to receive(:add_covered_globs).with(asset_glob, package_glob)
         view.render(inline: '<% javascript_packs_with_chunks_tag "foo" %>')
       end
+
+      it "adds globs to @covered_globs" do
+        view.render(inline: '<% javascript_packs_with_chunks_tag "foo" %>')
+        expect(collector.instance_variable_get("@covered_globs")).to eq(Set.new([asset_glob, package_glob]))
+      end
+    end
+  end
+
+  describe "#covered_files" do
+    let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
+
+    before do
+      allow(Selective).to receive(:enabled?).and_return true
+      allow(Selective).to receive(:initialize_rspec_hooks)
+      allow_any_instance_of(Selective::Config).to receive(:webpacker_app_locations).and_return([dummy_js_dir])
+
+      Selective.initialize_collectors
+      Selective.start_coverage
+    end
+
+    it "adds metadata coverage data" do
+      view.render(inline: '<% javascript_packs_with_chunks_tag "foo" %>')
+
+      expect(collector.covered_files).to eq(asset_glob => {glob: true}, package_glob => {glob: true})
     end
   end
 end

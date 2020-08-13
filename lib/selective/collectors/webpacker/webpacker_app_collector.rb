@@ -6,15 +6,10 @@ module Selective
   module Collectors
     module Webpacker
       class WebpackerAppCollector
-        @@hook_set = false
-
         def initialize
-          unless @@hook_set
-            ActiveSupport.on_load(:action_view) do
-              prepend Selective::Collectors::Webpacker::Helpers
-            end
+          ActiveSupport.on_load(:action_view) do
+            prepend Selective::Collectors::Webpacker::Helpers
           end
-          @@hook_set = true
         end
 
         def on_start

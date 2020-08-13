@@ -1,7 +1,9 @@
 require "factory_bot"
 require "simplecov"
 
-SimpleCov.start "rails"
+SimpleCov.start "rails" do
+  add_filter "lib/selective/version.rb"
+end
 
 ENV["RAILS_ENV"] = "test"
 
