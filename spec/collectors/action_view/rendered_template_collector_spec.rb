@@ -48,7 +48,10 @@ RSpec.describe Selective::Collectors::ActionView::RenderedTemplateCollector do
       view = DummyView.new(::ActionView::LookupContext.new([view_path]), {})
       view.render(template: "foo")
 
-      expect(Selective.coverage_collectors[described_class].covered_files).to eq("/gem/#{view_path}/foo.html.erb" => {template: true})
+      covered_files = Selective.coverage_collectors[described_class].covered_files
+      expect(covered_files.length).to eq(1)
+      expect(covered_files.keys.first).to include("#{view_path}/foo.html.erb")
+      expect(covered_files.values.first).to eq(template: true)
     end
   end
 
