@@ -31,10 +31,6 @@ RSpec.describe Selective do
   end
 
   describe ".configure" do
-    before do
-     # described_class.instance_variable_set(:@config, nil)
-    end
-
     after do
       described_class.instance_variable_set(:@config, nil)
     end
@@ -57,10 +53,6 @@ RSpec.describe Selective do
   end
 
   describe ".config" do
-    before do
-      #described_class.instance_variable_set(:@config, nil)
-    end
-
     after do
       described_class.instance_variable_set(:@config, nil)
     end
