@@ -18,13 +18,13 @@ require "selective/storage"
 
 module Selective
   class Config
-    attr_accessor :enabled_collector_classes
-    attr_accessor :webpacker_app_locations
-    attr_accessor :file_exclusion_check
-    attr_accessor :enable_check
-    attr_accessor :sprockets_asset_collector_class
-    attr_accessor :coverage_path
     attr_accessor :api_key
+    attr_accessor :enabled_collector_classes
+    attr_reader :coverage_path
+    attr_reader :enable_check
+    attr_reader :file_exclusion_check
+    attr_reader :sprockets_asset_collector_class
+    attr_reader :webpacker_app_locations
 
     def initialize
       @enabled_collector_classes = [
