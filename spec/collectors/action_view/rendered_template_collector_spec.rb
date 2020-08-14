@@ -32,6 +32,10 @@ RSpec.describe Selective::Collectors::ActionView::RenderedTemplateCollector do
         described_class.subscribe(collector)
       end
 
+      after do
+        described_class.unsubscribe
+      end
+
       it "is called" do
         mock_collector = double
         view = DummyView.new(::ActionView::LookupContext.new([view_path]), {})
