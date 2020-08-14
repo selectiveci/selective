@@ -23,7 +23,7 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
       let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
 
       before do
-        allow_any_instance_of(Selective::Collectors::Webpacker::WebpackerAppCollector).to receive(:initialize) do
+        allow(Selective::Collectors::Webpacker::WebpackerAppCollector).to receive(:new) do
           ActiveSupport.on_load(:action_view) do
             prepend WebpackerHelperDummy
           end

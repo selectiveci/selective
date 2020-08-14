@@ -25,7 +25,7 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagHelper do
       let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
 
       before do
-        allow_any_instance_of(Selective::Collectors::ActionView::AssetTagCollector).to receive(:initialize) do
+        allow(Selective::Collectors::ActionView::AssetTagCollector).to receive(:new) do
           ActiveSupport.on_load(:action_view) do
             prepend AssetTagHelperDummy
           end
