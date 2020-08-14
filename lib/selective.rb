@@ -14,37 +14,10 @@ require "selective/collectors/action_view/rendered_template_collector"
 require "selective/collectors/webpacker/webpacker_app_collector"
 require "selective/collectors/sprockets_asset_collector"
 require "selective/collector"
+require "selective/config"
 require "selective/storage"
 
 module Selective
-  class Config
-    attr_accessor :api_key
-    attr_accessor :enabled_collector_classes
-    attr_reader :coverage_path
-    attr_reader :enable_check
-    attr_reader :file_exclusion_check
-    attr_reader :sprockets_asset_collector_class
-    attr_reader :webpacker_app_locations
-
-    def initialize
-      @enabled_collector_classes = [
-        Selective::Collectors::RubyCoverageCollector,
-        Selective::Collectors::ActiveRecord::AssociationCollector,
-        Selective::Collectors::ActiveRecord::AttributeWriterCollector,
-        Selective::Collectors::ActiveRecord::AttributeReaderCollector,
-        Selective::Collectors::ActionView::RenderedTemplateCollector,
-        Selective::Collectors::ActionView::AssetTagCollector,
-        Selective::Collectors::Webpacker::WebpackerAppCollector
-      ]
-      @webpacker_app_locations = [File.join("app", "javascript")]
-      @file_exclusion_check = proc { |file| false }
-      @enable_check = proc { !ENV["TEST_COVERAGE_ENABLED"].nil? }
-      @sprockets_asset_collector_class = Selective::Collectors::SprocketsAssetCollector
-      @coverage_path = Pathname.new("/tmp/coverage-map.yml")
-      @api_key = ENV["SELECTIVE_API_KEY"]
-    end
-  end
-
   class << self
     attr_accessor :collector
     attr_writer :coverage_collectors
