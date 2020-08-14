@@ -29,8 +29,8 @@ module Selective
           @covered_templates_collection = Set.new
         end
 
-        def add_covered_templates(*tempates)
-          @covered_templates_collection&.merge(tempates)
+        def add_covered_templates(*templates)
+          @covered_templates_collection&.merge(templates)
         end
 
         def covered_files
