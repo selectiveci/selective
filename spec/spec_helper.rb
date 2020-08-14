@@ -42,7 +42,7 @@ module DummyHelpers
     if method.to_s.include?(name)
       method.call(*args)
     else
-      find_proper_method(name, method.super_method, args)
+      find_proper_method(name, method.super_method, *args)
     end
   end
 end
