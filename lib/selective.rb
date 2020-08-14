@@ -22,6 +22,8 @@ module Selective
     attr_accessor :collector
     attr_writer :coverage_collectors
 
+    delegate :coverage_collectors, to: :collector
+
     def configure
       @config ||= Config.new
       yield @config
@@ -33,7 +35,7 @@ module Selective
 
     def initialize_collectors
       if enabled?
-        @collector = Selective::Collector.new(config)
+        @collector = Collector.new(config)
 
         initialize_rspec_hooks
       end
@@ -47,10 +49,6 @@ module Selective
       end
     end
 
-    def coverage_collectors
-      @collector.coverage_collectors
-    end
-
     def start_coverage
       if enabled?
         coverage_collectors.values.each do |coverage_collector|
@@ -60,11 +58,11 @@ module Selective
     end
 
     def enabled?
-      Selective.config.enable_check.call
+      config.enable_check.call
     end
 
     def exclude_file?(file)
-      Selective.config.file_exclusion_check.call(file)
+      config.file_exclusion_check.call(file)
     end
   end
 end
