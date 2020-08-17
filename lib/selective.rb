@@ -14,40 +14,15 @@ require "selective/collectors/action_view/rendered_template_collector"
 require "selective/collectors/webpacker/webpacker_app_collector"
 require "selective/collectors/sprockets_asset_collector"
 require "selective/collector"
+require "selective/config"
 require "selective/storage"
 
 module Selective
-  class Config
-    attr_accessor :enabled_collector_classes
-    attr_accessor :webpacker_app_locations
-    attr_accessor :file_exclusion_check
-    attr_accessor :enable_check
-    attr_accessor :sprockets_asset_collector_class
-    attr_accessor :coverage_path
-    attr_accessor :api_key
-
-    def initialize
-      @enabled_collector_classes = [
-        Selective::Collectors::RubyCoverageCollector,
-        Selective::Collectors::ActiveRecord::AssociationCollector,
-        Selective::Collectors::ActiveRecord::AttributeWriterCollector,
-        Selective::Collectors::ActiveRecord::AttributeReaderCollector,
-        Selective::Collectors::ActionView::RenderedTemplateCollector,
-        Selective::Collectors::ActionView::AssetTagCollector,
-        Selective::Collectors::Webpacker::WebpackerAppCollector
-      ]
-      @webpacker_app_locations = [File.join("app", "javascript")]
-      @file_exclusion_check = proc { |file| false }
-      @enable_check = proc { !ENV["TEST_COVERAGE_ENABLED"].nil? }
-      @sprockets_asset_collector_class = Selective::Collectors::SprocketsAssetCollector
-      @coverage_path = Pathname.new("/tmp/coverage-map.yml")
-      @api_key = ENV["SELECTIVE_API_KEY"]
-    end
-  end
-
   class << self
     attr_accessor :collector
     attr_writer :coverage_collectors
+
+    delegate :coverage_collectors, to: :collector
 
     def configure
       @config ||= Config.new
@@ -60,7 +35,7 @@ module Selective
 
     def initialize_collectors
       if enabled?
-        @collector = Selective::Collector.new(config)
+        @collector = Collector.new(config)
 
         initialize_rspec_hooks
       end
@@ -74,10 +49,6 @@ module Selective
       end
     end
 
-    def coverage_collectors
-      @collector.coverage_collectors
-    end
-
     def start_coverage
       if enabled?
         coverage_collectors.values.each do |coverage_collector|
@@ -87,11 +58,11 @@ module Selective
     end
 
     def enabled?
-      Selective.config.enable_check.call
+      config.enable_check.call
     end
 
     def exclude_file?(file)
-      Selective.config.file_exclusion_check.call(file)
+      config.file_exclusion_check.call(file)
     end
   end
 end
