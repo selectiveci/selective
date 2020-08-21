@@ -3,16 +3,11 @@
 module Selective
   module Collectors
     class RubyCoverageCollector
-      @@initialized = false
-
       attr_reader :root_path
 
       def initialize(root_path = Dir.pwd)
-        unless @@initialized
-          require "coverage"
-          Coverage.start unless Coverage.running?
-          @@initialized = true
-        end
+        require "coverage"
+        Coverage.start unless Coverage.running?
         @root_path = root_path
       end
 
