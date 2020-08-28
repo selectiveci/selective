@@ -67,16 +67,7 @@ module Selective
     end
 
     def deliver_payload(payload)
-      uri = URI.parse("http://host.docker.internal:3000/api/v1/call_graphs")
-      headers = {:'Content-Type' => "application/json", "X-API-KEY" => config.api_key}
-
-      # Create the HTTP objects
-      http = Net::HTTP.new(uri.host, uri.port)
-      request = Net::HTTP::Post.new(uri.request_uri, headers)
-      request.body = payload.to_json
-
-      # Send the request
-      http.request(request)
+      Selective::Api.request('call_graphs', payload)
     end
 
     def check_dump_threshold
