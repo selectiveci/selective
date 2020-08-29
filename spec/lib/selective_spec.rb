@@ -107,7 +107,7 @@ RSpec.describe Selective do
     it "configures RSpec" do
       expect(RSpec).to receive(:configure).and_yield(configure)
       expect(configure).to receive(:before).with(:example).once.and_yield
-      expect(configure).to receive(:after).with(:example).once.and_yeild
+      expect(configure).to receive(:after).with(:example).once.and_yield
       expect(configure).to receive(:after).with(:suite).once.and_yield
 
       described_class.initialize_rspec_hooks
@@ -161,7 +161,7 @@ RSpec.describe Selective do
 
           expect(source).to include(code)
         end
-        binding.pry
+        # binding.pry
       end
     end
   end
