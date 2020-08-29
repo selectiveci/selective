@@ -144,7 +144,7 @@ RSpec.describe Selective::Collector do
     # We will do better when this code gets
     # extracted out of here (very soon)
     it "sends the request" do
-      expect_any_instance_of(Net::HTTP).to receive(:request)
+      expect(Selective::Api).to receive(:request)
       subject
     end
   end

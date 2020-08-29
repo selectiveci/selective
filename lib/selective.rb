@@ -46,7 +46,7 @@ module Selective
       RSpec.configure do |config|
         config.before(:example) { Selective.collector.start_recording_code_coverage }
         config.after(:example) { |example| Selective.collector.write_code_coverage_artifact(example) }
-        config.after(:suite) { |suite| Selective.collector.finalize(suite) }
+        config.after(:suite) { |_suite| Selective.collector.finalize }
       end
     end
 
