@@ -16,7 +16,7 @@ module Selective
       elsif method == :post
         request = Net::HTTP::Post.new(uri.request_uri, headers)
       else
-        raise 'Invalid method'
+        raise "Invalid method"
       end
       request.body = body.to_json if body.present?
 
