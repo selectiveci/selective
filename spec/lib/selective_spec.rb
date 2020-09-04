@@ -1,4 +1,5 @@
 require "spec_helper"
+require "method_source"
 
 RSpec.describe Selective do
   describe ".configure" do
@@ -90,26 +91,34 @@ RSpec.describe Selective do
   end
 
   describe ".initialize_rspec_hooks" do
-    before do
-      allow(described_class).to receive(:enabled?).and_return(true)
-      described_class
-        .collector = Selective::Collector.new(described_class.config)
-    end
+    let(:rspec_config) { RSpec::Core::Configuration.new }
 
-    after do
-      described_class.instance_variable_set(:@config, nil)
-      described_class.instance_variable_set(:@collector, nil)
-    end
+    context "with hooks" do
+      let(:expected_hooks) do
+        {
+          %i[@before_example_hooks @items_and_filters] => "{ Selective.collector.start_recording_code_coverage }",
+          %i[@after_example_hooks @items_and_filters] => "{ |example| Selective.collector.write_code_coverage_artifact(example) }",
+          %i[@owner @after_suite_hooks] => "{ Selective.collector.finalize }"
+        }
+      end
 
-    let(:configure) { double }
+      it "has expected hooks" do
+        allow(RSpec).to receive(:configure).and_yield(rspec_config)
 
-    it "configures RSpec" do
-      expect(RSpec).to receive(:configure).and_yield(configure)
-      expect(configure).to receive(:before).with(:example).once
-      expect(configure).to receive(:after).with(:example).once
-      expect(configure).to receive(:after).with(:suite).once
+        described_class.initialize_rspec_hooks
 
-      described_class.initialize_rspec_hooks
+        expected_hooks.each do |hooks, code|
+          hook_ptr = rspec_config.hooks
+
+          hooks.each do |hook|
+            hook_ptr = hook_ptr.instance_variable_get(hook)
+          end
+
+          source = hook_ptr.flatten.first.block.source
+
+          expect(source).to include(code)
+        end
+      end
     end
   end
 
