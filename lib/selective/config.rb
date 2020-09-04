@@ -3,6 +3,7 @@
 module Selective
   class Config
     attr_accessor :api_key
+    attr_accessor :backend_host
     attr_accessor :enabled_collector_classes
     attr_reader :coverage_path
     attr_reader :enable_check
@@ -28,6 +29,7 @@ module Selective
       @sprockets_asset_collector_class = Selective::Collectors::SprocketsAssetCollector
       @coverage_path = Pathname.new("/tmp/coverage-map.yml")
       @api_key = ENV["SELECTIVE_API_KEY"]
+      @backend_host = ENV.fetch("SELECTIVE_BACKEND_HOST") { 'https://selective-ci.herokuapp.com' }
     end
   end
 end

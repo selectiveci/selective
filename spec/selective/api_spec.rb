@@ -1,11 +1,7 @@
 require "spec_helper"
 
 RSpec.describe Selective::Api do
-  let(:host) { "host.docker.internal:3000" }
-
-  it "defines HOST constant" do
-    expect(Selective::Api::HOST).to eq("http://#{host}")
-  end
+  let(:host) { "https://selective-ci.herokuapp.com" }
 
   describe ".request" do
     subject(:request) { Selective::Api.request("repository") }
