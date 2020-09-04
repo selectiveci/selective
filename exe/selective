@@ -7,7 +7,9 @@ body = Selective::Api.request("repository", method: :get)
 
 git_branch = body["default_branch_name"]
 
-diff = `git diff #{git_branch}`
+`git fetch origin #{git_branch}`
+
+diff = `git diff origin/#{git_branch}`
 
 request_body = {
   git_branch: git_branch,
