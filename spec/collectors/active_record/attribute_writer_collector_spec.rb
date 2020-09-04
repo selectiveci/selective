@@ -35,7 +35,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeWriterCollector do
       it "is not called" do
         expect_any_instance_of(ActiveRecord::AttributeMethods::Write).to receive(:_write_attribute)
         a = ADummy.new
-        a.attr1 = 'foobar'
+        a.attr1 = "foobar"
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeWriterCollector do
       it "is called" do
         expect(collector).to receive(:add_covered_models)
         a = ADummy.new
-        a.attr1 = 'foobar'
+        a.attr1 = "foobar"
       end
     end
   end
@@ -67,7 +67,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeWriterCollector do
 
     it "adds metadata" do
       a = ADummy.new
-      a.attr1 = 'foobar'
+      a.attr1 = "foobar"
 
       expect(collector.covered_files).to have_value(attribute_written: true)
     end
