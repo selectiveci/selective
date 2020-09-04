@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'selective'
+require "selective"
 
-body = Selective::Api.request('repository', method: :get)
+body = Selective::Api.request("repository", method: :get)
 
 git_branch = body["default_branch_name"]
 
@@ -14,6 +14,6 @@ request_body = {
   diff: diff
 }
 
-body = Selective::Api.request('call_graphs/tests_from_diff', request_body, method: :post)
+body = Selective::Api.request("call_graphs/tests_from_diff", request_body, method: :post)
 
 puts body["tests"].join(" ")

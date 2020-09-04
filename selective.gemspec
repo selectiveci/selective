@@ -33,5 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "factory_bot", "~> 6.1"
   spec.add_development_dependency "sqlite3", "~> 1.4"
   spec.add_development_dependency "webpacker", "4.0.1"
-  spec.add_development_dependency 'webmock', '~> 3.8.3'
+  spec.add_development_dependency "webmock", "~> 3.8.3"
 end

@@ -16,7 +16,7 @@ require "selective/collectors/sprockets_asset_collector"
 require "selective/collector"
 require "selective/config"
 require "selective/storage"
-require 'selective/api'
+require "selective/api"
 
 module Selective
   class << self

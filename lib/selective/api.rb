@@ -3,11 +3,11 @@ require "json"
 
 module Selective
   module Api
-    HOST = 'http://host.docker.internal:3000'
+    HOST = "http://host.docker.internal:3000"
 
-    def self.request(path, body=nil, method: :get)
+    def self.request(path, body = nil, method: :get)
       uri = URI.parse("#{HOST}/api/v1/#{path}")
-      headers = { :'Content-Type' => 'application/json', 'X-API-KEY' => Selective.config.api_key }
+      headers = {:'Content-Type' => "application/json", "X-API-KEY" => Selective.config.api_key}
 
       # Create the HTTP objects
       http = Net::HTTP.new(uri.host, uri.port)
