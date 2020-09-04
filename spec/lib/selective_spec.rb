@@ -106,49 +106,31 @@ RSpec.describe Selective do
 
     it "configures RSpec" do
       expect(RSpec).to receive(:configure).and_yield(configure)
+      allow(Selective::Api).to receive(:request)
       expect(configure).to receive(:before).with(:example).once.and_yield
-      expect(configure).to receive(:after).with(:example).once.and_yield
+      expect(configure).to receive(:after).with(:example).once.and_yield(double(id: 1))
       expect(configure).to receive(:after).with(:suite).once.and_yield
 
       described_class.initialize_rspec_hooks
     end
 
     context "with hooks" do
-      def hooks
-        RSpec.configuration.hooks
-      end
-
-      let!(:before_example_was) do
-        hooks.instance_variable_get(:@before_example_hooks)
-      end
-      let!(:after_example_was) do
-        hooks.instance_variable_get(:@after_example_hooks)
-      end
-      let!(:after_suite_was) do
-        hooks.instance_variable_get(:@owner)
-          .instance_variable_get(:@after_suite_hooks)
-      end
-
-      after do
-        hooks.instance_variable_set(:@before_example_hook, before_example_was)
-        hooks.instance_variable_set(:@after_example_hooks, after_example_was)
-        hooks.instance_variable_get(:@owner)
-          .instance_variable_set(:@after_suite_hooks, after_suite_was)
-      end
-
       let(:expected_hooks) do
         {
           [:@before_example_hooks, :@items_and_filters] => "{ Selective.collector.start_recording_code_coverage }",
           [:@after_example_hooks, :@items_and_filters] => "{ |example| Selective.collector.write_code_coverage_artifact(example) }",
-          [:@owner, :@after_suite_hooks] => "{ |suite| Selective.collector.finalize(suite) }"
+          [:@owner, :@after_suite_hooks] => "{ Selective.collector.finalize }"
         }
       end
+      let(:rspec_config) { RSpec::Core::Configuration.new }
 
-      it "has expected hook" do
+      it "has expected hooks" do
+        allow(RSpec).to receive(:configure).and_yield(rspec_config)
+
         described_class.initialize_rspec_hooks
 
         expected_hooks.each do |hooks, code|
-          hook_ptr = RSpec.configuration.hooks
+          hook_ptr = rspec_config.hooks
 
           hooks.each do |hook|
             hook_ptr = hook_ptr.instance_variable_get(hook)
@@ -161,7 +143,6 @@ RSpec.describe Selective do
 
           expect(source).to include(code)
         end
-        # binding.pry
       end
     end
   end
