@@ -5,6 +5,8 @@ module Selective
     class RubyCoverageCollector
       attr_reader :root_path
 
+      EXCLUDE_PATHS = %w[/spec /vendor]
+
       def initialize(root_path = Dir.pwd)
         require "coverage"
         Coverage.start unless Coverage.running?
@@ -36,8 +38,13 @@ module Selective
       end
 
       def filter(paths)
-        paths
-          .select { |file_name| file_name.start_with?(root_path) && !file_name.include?(root_path + "/spec") }
+        paths.select do |file_name|
+          file_name.start_with?(root_path) && exclude_paths.none? { |p| file_name.include?(p) }
+        end
+      end
+
+      def exclude_paths
+        @exclude_paths ||= EXCLUDE_PATHS.map { |p| root_path + p }
       end
     end
   end

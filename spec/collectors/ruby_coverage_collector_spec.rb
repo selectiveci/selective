@@ -66,7 +66,8 @@ RSpec.describe Selective::Collectors::RubyCoverageCollector do
       "#{Dir.pwd}/file3.rb" => [1, 1, 1, 1],
       "#{Dir.pwd}/file4.rb" => [nil, 1, 1, 1],
       "#{Dir.pwd}/spec/file5.rb" => [nil, nil, 1, 1],
-      "/path/to/file6.rb" => [nil, 1, nil, nil]
+      "#{Dir.pwd}/vendor/file6.rb" => [nil, nil, 1, 1],
+      "/path/to/file7.rb" => [nil, 1, nil, nil]
     }
   end
 
@@ -115,8 +116,12 @@ RSpec.describe Selective::Collectors::RubyCoverageCollector do
       expect(covered_files.keys).not_to include("#{Dir.pwd}/spec/file5.rb")
     end
 
+    it "excludes paths containing /vendor" do
+      expect(covered_files.keys).not_to include("#{Dir.pwd}/vendor/file6.rb")
+    end
+
     it "excludes paths not beginning with root_path" do
-      expect(covered_files.keys).not_to include("/path/to/file6.rb")
+      expect(covered_files.keys).not_to include("/path/to/file7.rb")
     end
 
     it "sets all values to true" do
