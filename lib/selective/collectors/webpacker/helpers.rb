@@ -4,19 +4,21 @@ module Selective
   module Collectors
     module Webpacker
       module Helpers
+        ERROR_MESSAGE = "Selective.config.webpacker_app_locations must be set to collect webpacker app coverage"
+
         def javascript_packs_with_chunks_tag(*names, **options)
-          raise(StandardError, "Selective.config.webpacker_app_locations must be set to collect webpacker app coverage") if Selective.config.webpacker_app_locations.blank?
+          precheck_locations_set
 
           globs = names.flat_map { |name|
             app_home = javascript_app_home(name)
-            raise(StandardError, "Unable to locate source location for javascript app #{name}") unless Dir.exist?(app_home)
+            raise(StandardError, "Unable to locate source location for javascript app #{name}") unless app_home
 
             [
               File.join(app_home, "src", "**.{scss,css,js}"),
               File.join(app_home, "package*.json")
             ]
           }
-          Selective.coverage_collectors[WebpackerAppCollector].add_covered_globs(*globs)
+          Selective.coverage_collectors.fetch(WebpackerAppCollector).add_covered_globs(*globs)
           super
         end
 
@@ -26,6 +28,12 @@ module Selective
           }.detect do |potential_app_home|
             Dir.exist?(potential_app_home)
           end
+        end
+
+        def precheck_locations_set
+          return if Selective.config.webpacker_app_locations.any?
+
+          raise(StandardError, ERROR_MESSAGE)
         end
       end
     end

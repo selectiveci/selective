@@ -4,6 +4,10 @@ RSpec.describe Selective::Collectors::ActionView::RenderedTemplateCollector do
   let(:view_path) { "spec/dummy/app/views" }
   let(:collector) { Selective.coverage_collectors[described_class] }
 
+  after do
+    described_class.unsubscribe
+  end
+
   describe "#add_covered_templates" do
     context "when selective is disabled" do
       before do
@@ -32,17 +36,13 @@ RSpec.describe Selective::Collectors::ActionView::RenderedTemplateCollector do
         described_class.subscribe(collector)
       end
 
-      after do
-        described_class.unsubscribe
-      end
-
       it "is called" do
         mock_collector = double
         view = DummyView.new(::ActionView::LookupContext.new([view_path]), {})
 
         expect(mock_collector).to receive(:add_covered_templates).with(view.lookup_context.find_template("foo.html.erb").identifier)
         described_class.subscribe(mock_collector)
-        expect(described_class.subscriber).not_to be_nil
+        expect(described_class.subscriber).to be_an_instance_of(ActiveSupport::Notifications::Fanout::Subscribers::Timed)
 
         view.render(template: "foo.html.erb")
       end

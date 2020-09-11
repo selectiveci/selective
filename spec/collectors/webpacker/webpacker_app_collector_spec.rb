@@ -59,6 +59,22 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
         view.render(inline: '<% javascript_packs_with_chunks_tag "foo" %>')
       end
 
+      it "is called but fails due to no locations" do
+        allow_any_instance_of(Selective::Config).to receive(:webpacker_app_locations).and_return([])
+
+        expect { view.render(inline: '<% javascript_packs_with_chunks_tag "foo" %>') }.
+          to raise_error(StandardError, 
+            "Selective.config.webpacker_app_locations must be set to collect webpacker app coverage")
+      end
+
+      it "is called but fails due to not finding file locations" do
+        allow_any_instance_of(Selective::Config).to receive(:webpacker_app_locations).and_return(['bad_location'])
+
+        expect { view.render(inline: '<% javascript_packs_with_chunks_tag "foo" %>') }.
+          to raise_error(ActionView::Template::Error, 
+            "Unable to locate source location for javascript app foo")
+      end
+
       it "adds globs to @covered_globs" do
         view.render(inline: '<% javascript_packs_with_chunks_tag "foo" %>')
         expect(collector.instance_variable_get("@covered_globs")).to eq(Set.new([asset_glob, package_glob]))

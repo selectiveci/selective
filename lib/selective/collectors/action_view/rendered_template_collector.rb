@@ -9,20 +9,20 @@ module Selective
 
           def subscribe(collector)
             @subscriber = ActiveSupport::Notifications.subscribe("!render_template.action_view") { |_name, _start, _finish, _id, payload|
-              collector.add_covered_templates(payload[:identifier])
+              collector.add_covered_templates(payload.fetch(:identifier))
             }
           end
 
           def unsubscribe
-            if @subscriber
-              ActiveSupport::Notifications.unsubscribe(@subscriber)
+            if subscriber
+              ActiveSupport::Notifications.unsubscribe(subscriber)
               @subscriber = nil
             end
           end
         end
 
         def initialize
-          RenderedTemplateCollector.subscribe(self) unless RenderedTemplateCollector.subscriber.present?
+          self.class.subscribe(self) unless self.class.subscriber.present?
         end
 
         def on_start
@@ -30,16 +30,20 @@ module Selective
         end
 
         def add_covered_templates(*templates)
-          @covered_templates_collection&.merge(templates)
+          covered_templates_collection&.merge(templates)
         end
 
         def covered_files
           {}.tap do |coverage_data|
-            @covered_templates_collection.map do |template_file|
+            covered_templates_collection.map do |template_file|
               coverage_data[template_file] = {template: true}
             end
           end
         end
+
+        private
+
+        attr_reader :covered_templates_collection
       end
     end
   end

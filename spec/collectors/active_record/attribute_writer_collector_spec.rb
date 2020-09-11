@@ -46,6 +46,8 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeWriterCollector do
 
         Selective.initialize_collectors
         Selective.start_coverage
+
+        expect(collector.instance_variable_get(:@covered_model_collection)).to eql(Set.new)
       end
 
       it "is called" do

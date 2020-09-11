@@ -15,7 +15,7 @@ module Selective
         end
 
         def add_covered_models(*models)
-          @covered_model_collection&.merge(models)
+          @covered_model_collection.merge(models)
         end
 
         def covered_files
@@ -36,7 +36,6 @@ module Selective
         end
 
         def data
-          nil
         end
       end
     end
