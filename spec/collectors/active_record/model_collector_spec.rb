@@ -52,8 +52,8 @@ RSpec.describe Selective::Collectors::ActiveRecord::ModelCollector do
       object.add_covered_models(ADummy, BadModel, BDummy)
 
       expect(object.covered_files).
-        to eql({"/gem/spec/dummy/app/models/a_dummy.rb" => [1, 2, 5],
-        "/gem/spec/dummy/app/models/b_dummy.rb" => [1, 2, 5]})
+        to eql({"#{Dir.pwd}/spec/dummy/app/models/a_dummy.rb" => [1, 2, 5],
+        "#{Dir.pwd}/spec/dummy/app/models/b_dummy.rb" => [1, 2, 5]})
     end
   end
 
@@ -64,8 +64,8 @@ RSpec.describe Selective::Collectors::ActiveRecord::ModelCollector do
       object.add_covered_models(ADummy, BadModel, BDummy)
 
       expect(object.covered_files).
-        to eql({"/gem/spec/dummy/app/models/a_dummy.rb" => nil,
-        "/gem/spec/dummy/app/models/b_dummy.rb" => nil})
+        to eql({"#{Dir.pwd}/spec/dummy/app/models/a_dummy.rb" => nil,
+        "#{Dir.pwd}/spec/dummy/app/models/b_dummy.rb" => nil})
     end
   end
 end
