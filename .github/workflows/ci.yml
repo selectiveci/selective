@@ -2,6 +2,7 @@ name: CI
 on: [push]
 
 env:
+  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
   GIT_BRANCH: ${{ github.ref }}
   GIT_COMMIT_SHA: ${{ github.sha }}
 
