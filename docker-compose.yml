@@ -5,8 +5,8 @@ services:
     build:
       context: .
       args:
-        - UID=${RUBY_UID-1000}
-        - GID=${RUBY_GID-1000}
+        - UID=${RUBY_UID:?err}
+        - GID=${RUBY_UID:?err}
     volumes:
       - .:/gem:cached
       - gems:/gems
