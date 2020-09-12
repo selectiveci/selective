@@ -29,9 +29,9 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
           end
         end
 
-        allow(Selective).to receive(:enabled?).and_return true
+        allow(Selective).to receive(:report_callgraph?).and_return true
         allow(Selective).to receive(:call_dummy?).and_return true
-        allow(Selective).to receive(:initialize_rspec_hooks)
+        allow(Selective).to receive(:initialize_rspec_reporting_hooks)
         Selective.initialize_collectors
       end
 
@@ -46,8 +46,8 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
       let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
 
       before do
-        allow(Selective).to receive(:enabled?).and_return true
-        allow(Selective).to receive(:initialize_rspec_hooks)
+        allow(Selective).to receive(:report_callgraph?).and_return true
+        allow(Selective).to receive(:initialize_rspec_reporting_hooks)
         allow_any_instance_of(Selective::Config).to receive(:webpacker_app_locations).and_return([dummy_js_dir])
 
         Selective.initialize_collectors
@@ -70,8 +70,8 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
     let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
 
     before do
-      allow(Selective).to receive(:enabled?).and_return true
-      allow(Selective).to receive(:initialize_rspec_hooks)
+      allow(Selective).to receive(:report_callgraph?).and_return true
+      allow(Selective).to receive(:initialize_rspec_reporting_hooks)
       allow_any_instance_of(Selective::Config).to receive(:webpacker_app_locations).and_return([dummy_js_dir])
 
       Selective.initialize_collectors
