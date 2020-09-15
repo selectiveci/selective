@@ -108,41 +108,58 @@ RSpec.describe Selective do
   end
 
   describe ".initialize_rspec_reporting_hooks" do
+    subject { described_class.initialize_rspec_reporting_hooks }
+
     let(:rspec_config) { RSpec::Core::Configuration.new }
     let(:collector) { double(:collector, start_recording_code_coverage: nil, write_code_coverage_artifact: nil, finalize: nil) }
+    let(:example) { double(:example, run: nil) }
 
-    context "with hooks" do
-      let(:expected_hooks) do
-        {
-          %i[@around_example_hooks @items_and_filters] => 1,
-          %i[@owner @after_suite_hooks] => 1
-        }
+    before do
+      allow(RSpec).to receive(:configure).and_yield(rspec_config)
+      allow(Selective).to receive(:collector).and_return(collector)
+    end
+
+    context "around_example hooks" do
+      it "sets one hook" do
+        expect { subject }.to change { rspec_config_hooks_for(:around_example).length }.by(1)
       end
 
-      it "has expected hooks" do
-        allow(RSpec).to receive(:configure).and_yield(rspec_config)
-        allow(Selective).to receive(:collector).and_return(collector)
+      context "when calling the hook" do
+        before do
+          subject
+          hooks = rspec_config_hooks_for(:around_example)
+          hooks.first.block.call(example)
+        end
 
-        expect { described_class.initialize_rspec_reporting_hooks }.to change {
-          expected_hooks.map do |hooks, codes|
-            hook_ptr = rspec_config.hooks
+        it "starts recording code coverage" do
+          expect(collector).to have_received(:start_recording_code_coverage).once
+        end
 
-            hooks.each do |hook|
-              hook_ptr = hook_ptr.instance_variable_get(hook)
-            end
+        it "writes the code coverage artifact" do
+          expect(collector).to have_received(:write_code_coverage_artifact).once
+        end
 
-            hook_ptr.flatten.count do |item|
-              next unless item.respond_to?(:block)
-              if item.block.source_location.first.include?("selective/lib")
-                item.block.call(double("example", run: nil)).then { true }
-              end
-            end
-          end
-        }.from(expected_hooks.length.times.map { 0 }).to(expected_hooks.values)
+        it "runs the example" do
+          expect(example).to have_received(:run).once
+        end
+      end
+    end
 
-        expect(collector).to have_received(:start_recording_code_coverage).once
-        expect(collector).to have_received(:write_code_coverage_artifact).once
-        expect(collector).to have_received(:finalize).once
+    context "after_suite hooks" do
+      it "sets one hook" do
+        expect { subject }.to change { rspec_config_hooks_for(:after_suite).length }.by(1)
+      end
+
+      context "when calling the hook" do
+        before do
+          subject
+          hooks = rspec_config_hooks_for(:after_suite)
+          hooks.first.block.call(example)
+        end
+
+        it "calls finalize on the collector" do
+          expect(collector).to have_received(:finalize).once
+        end
       end
     end
   end
