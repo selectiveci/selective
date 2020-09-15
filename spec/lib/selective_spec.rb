@@ -109,6 +109,7 @@ RSpec.describe Selective do
 
   describe ".initialize_rspec_reporting_hooks" do
     let(:rspec_config) { RSpec::Core::Configuration.new }
+    let(:collector) { double(:collector, start_recording_code_coverage: nil, write_code_coverage_artifact: nil, finalize: nil) }
 
     context "with hooks" do
       let(:expected_hooks) do
@@ -120,6 +121,7 @@ RSpec.describe Selective do
 
       it "has expected hooks" do
         allow(RSpec).to receive(:configure).and_yield(rspec_config)
+        allow(Selective).to receive(:collector).and_return(collector)
 
         expect { described_class.initialize_rspec_reporting_hooks }.to change {
           expected_hooks.map do |hooks, codes|
@@ -131,10 +133,16 @@ RSpec.describe Selective do
 
             hook_ptr.flatten.count do |item|
               next unless item.respond_to?(:block)
-              item.block.source_location.first.include?("selective/lib")
+              if item.block.source_location.first.include?("selective/lib")
+                item.block.call(double('example', run: nil)).then { true }
+              end
             end
           end
         }.from([0, 0]).to(expected_hooks.values)
+
+        expect(collector).to have_received(:start_recording_code_coverage).once
+        expect(collector).to have_received(:write_code_coverage_artifact).once
+        expect(collector).to have_received(:finalize).once
       end
     end
   end
