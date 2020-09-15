@@ -17,6 +17,8 @@ Dir[File.expand_path("support/**/*.rb", File.dirname(__FILE__))].sort.each { |f|
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
+  config.include SpecHelperMethods
+
   config.before(:suite) do
     FactoryBot.find_definitions
   end

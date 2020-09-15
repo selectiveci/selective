@@ -5,11 +5,13 @@ module Selective
     attr_accessor :api_key
     attr_accessor :backend_host
     attr_accessor :enabled_collector_classes
-    attr_reader :coverage_path
-    attr_reader :enable_check
-    attr_reader :file_exclusion_check
+    attr_accessor :coverage_path
+    attr_accessor :report_callgraph_check
+    attr_accessor :select_tests_check
+    attr_accessor :file_exclusion_check
+    attr_accessor :webpacker_app_locations
+
     attr_reader :sprockets_asset_collector_class
-    attr_reader :webpacker_app_locations
 
     DEFAULT_COLLECTOR_CLASSES = [
       Selective::Collectors::RubyCoverageCollector,
@@ -21,15 +23,24 @@ module Selective
       Selective::Collectors::Webpacker::WebpackerAppCollector
     ].freeze
 
+    DEFAULT_BACKEND_HOST       = "https://selective-ci.herokuapp.com"
+    DEFAULT_COVERAGE_PATH      = "/tmp/coverage-map.yml"
+    DEFAULT_WEBPACKER_LOCATION = File.join("app", "javascript").freeze
+
+    private_constant :DEFAULT_BACKEND_HOST
+    private_constant :DEFAULT_COVERAGE_PATH
+
     def initialize
+      @api_key = ENV.fetch("SELECTIVE_API_KEY", nil)
       @enabled_collector_classes = DEFAULT_COLLECTOR_CLASSES
-      @webpacker_app_locations = [File.join("app", "javascript")]
-      @file_exclusion_check = proc { |file| false }
-      @enable_check = proc { !ENV["TEST_COVERAGE_ENABLED"].nil? }
-      @sprockets_asset_collector_class = Selective::Collectors::SprocketsAssetCollector
-      @coverage_path = Pathname.new("/tmp/coverage-map.yml")
-      @api_key = ENV["SELECTIVE_API_KEY"]
-      @backend_host = ENV.fetch("SELECTIVE_BACKEND_HOST") { 'https://selective-ci.herokuapp.com' }
+      @backend_host = ENV.fetch("SELECTIVE_BACKEND_HOST") { DEFAULT_BACKEND_HOST }
+
+      @file_exclusion_check = proc { false }
+      @report_callgraph_check = proc { !ENV["SELECTIVE_REPORT_CALLGRAPH"].nil? }
+      @select_tests_check = proc { !ENV["SELECTIVE_SELECT_TESTS"].nil? }
+      @sprockets_asset_collector_class = Collectors::SprocketsAssetCollector
+      @coverage_path = Pathname.new(DEFAULT_COVERAGE_PATH)
+      @webpacker_app_locations = [DEFAULT_WEBPACKER_LOCATION]
     end
   end
 end

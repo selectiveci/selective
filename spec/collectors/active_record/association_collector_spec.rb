@@ -9,8 +9,8 @@ RSpec.describe Selective::Collectors::ActiveRecord::AssociationCollector do
 
   describe "#set_hook" do
     before do
-      allow(Selective).to receive(:enabled?).and_return(true)
-      allow(Selective).to receive(:initialize_rspec_hooks)
+      allow(Selective).to receive(:report_callgraph?).and_return(true)
+      allow(Selective).to receive(:initialize_rspec_reporting_hooks)
       Selective.initialize_collectors
     end
 
@@ -21,8 +21,8 @@ RSpec.describe Selective::Collectors::ActiveRecord::AssociationCollector do
 
   describe "#data" do
     before do
-      allow(Selective).to receive(:enabled?).and_return(true)
-      allow(Selective).to receive(:initialize_rspec_hooks)
+      allow(Selective).to receive(:report_callgraph?).and_return(true)
+      allow(Selective).to receive(:initialize_rspec_reporting_hooks)
       Selective.initialize_collectors
       Selective.start_coverage
     end
@@ -42,9 +42,9 @@ RSpec.describe Selective::Collectors::ActiveRecord::AssociationCollector do
           end
         end
 
-        allow(Selective).to receive(:enabled?).and_return true
+        allow(Selective).to receive(:report_callgraph?).and_return true
         allow(Selective).to receive(:call_dummy?).and_return true
-        allow(Selective).to receive(:initialize_rspec_hooks)
+        allow(Selective).to receive(:initialize_rspec_reporting_hooks)
         Selective.initialize_collectors
         Selective.start_coverage
       end
