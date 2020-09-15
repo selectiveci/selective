@@ -69,7 +69,7 @@ module Selective
         end
 
         config.around(:example) do |example|
-          if (Selective.selected_tests & [example.id, example.file_path]).any?
+          if Selective.selected_tests.blank? || (Selective.selected_tests & [example.id, example.file_path]).any?
             example.run
           else
             Selective.skipped_tests << example.id
