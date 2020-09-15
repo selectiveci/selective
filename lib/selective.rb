@@ -55,7 +55,9 @@ module Selective
           Selective.collector.write_code_coverage_artifact(example)
         end
 
-        config.after(:suite) { Selective.collector.finalize }
+        config.after(:suite) do
+          Selective.collector.finalize
+        end
       end
     end
 
