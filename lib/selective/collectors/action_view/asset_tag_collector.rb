@@ -8,7 +8,7 @@ module Selective
       class AssetTagCollector
         def initialize
           ActiveSupport.on_load(:action_view) do
-            prepend Selective::Collectors::ActionView::AssetTagHelper
+            prepend AssetTagHelper
           end
         end
 

@@ -11,7 +11,7 @@ module Selective
 
           globs = names.flat_map { |name|
             app_home = javascript_app_home(name)
-            raise(StandardError, "Unable to locate source location for javascript app #{name}") unless app_home
+            raise("Unable to locate source location for javascript app #{name}") unless app_home
 
             [
               File.join(app_home, "src", "**.{scss,css,js}"),
@@ -33,7 +33,7 @@ module Selective
         def precheck_locations_set
           return if Selective.config.webpacker_app_locations.any?
 
-          raise(StandardError, ERROR_MESSAGE)
+          raise(ERROR_MESSAGE)
         end
       end
     end
