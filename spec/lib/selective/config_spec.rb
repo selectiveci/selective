@@ -51,19 +51,5 @@ RSpec.describe Selective::Config do
         expect(object.api_key).to eql("the_api_key")
       end
     end
-
-    context "with test coverage enabled" do
-      before do
-        ENV["TEST_COVERAGE_ENABLED"] = "false"
-      end
-
-      after do
-        ENV.delete("TEST_COVERAGE_ENABLED")
-      end
-
-      it "initializes" do
-        expect(object.enable_check.call).to be true
-      end
-    end
   end
 end
