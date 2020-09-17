@@ -22,7 +22,7 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagCollector do
   end
 
   describe "#on_start" do
-    let(:collector) { Selective.coverage_collectors[described_class] }
+    let(:collector) { Selective.coverage_collectors.fetch(described_class) }
 
     it "inits collection instance variable" do
       expect(collector.instance_variable_get("@covered_assets_collection")).to eql(Set.new)

@@ -5,7 +5,7 @@ module Selective
     module ActiveRecord
       module AttributeReaderHelper
         def _read_attribute(attr_name)
-          Selective.coverage_collectors[AttributeReaderCollector].add_covered_models(self.class)
+          Selective.coverage_collectors.fetch(AttributeReaderCollector).add_covered_models(self.class)
           super
         end
       end
