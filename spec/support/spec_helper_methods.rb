@@ -14,7 +14,7 @@ module SpecHelperMethods
 
     hook_ptr.flatten.select do |item|
       next unless item.respond_to?(:block)
-      item.block.source_location.first.include?("selective/lib")
+      item.block.source_location.first.include?("lib/selective.rb")
     end
   end
 end
