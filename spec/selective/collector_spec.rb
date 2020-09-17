@@ -22,7 +22,7 @@ RSpec.describe Selective::Collector do
     subject { collector.start_recording_code_coverage }
 
     context "when Selective is enabled" do
-      before { allow(Selective).to receive(:enabled?).and_return(true) }
+      before { allow(Selective).to receive(:report_callgraph?).and_return(true) }
 
       it "calls on_start on coverage_collectors" do
         expect(coverage_collector_instance_double).to receive(:on_start)
@@ -50,7 +50,7 @@ RSpec.describe Selective::Collector do
     end
 
     context "when Selective is enabled" do
-      before { allow(Selective).to receive(:enabled?).and_return(true) }
+      before { allow(Selective).to receive(:report_callgraph?).and_return(true) }
 
       it "adds the expected entries to @map" do
         expect { subject }.to change { collector.map }.from({}).to(
@@ -99,7 +99,7 @@ RSpec.describe Selective::Collector do
     end
 
     context "when Selective is enabled" do
-      before { allow(Selective).to receive(:enabled?).and_return(true) }
+      before { allow(Selective).to receive(:report_callgraph?).and_return(true) }
 
       context "when the map is not empty" do
         before do

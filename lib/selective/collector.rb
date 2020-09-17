@@ -16,7 +16,7 @@ module Selective
     end
 
     def start_recording_code_coverage
-      return unless Selective.enabled?
+      return unless Selective.report_callgraph?
 
       coverage_collectors.each do |_coverage_collector_class, coverage_collector|
         coverage_collector.on_start
@@ -24,7 +24,7 @@ module Selective
     end
 
     def write_code_coverage_artifact(example)
-      return unless Selective.enabled?
+      return unless Selective.report_callgraph?
 
       cleaned_coverage = {}.tap do |cleaned|
         coverage_collectors.values.each do |coverage_collector|
@@ -42,7 +42,7 @@ module Selective
     end
 
     def finalize
-      return unless Selective.enabled?
+      return unless Selective.report_callgraph?
 
       map_storage.dump(map) if map.size.positive?
 

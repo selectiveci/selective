@@ -24,9 +24,9 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeWriterCollector do
           end
         end
 
-        allow(Selective).to receive(:enabled?).and_return true
+        allow(Selective).to receive(:report_callgraph?).and_return true
         allow(Selective).to receive(:call_dummy?).and_return true
-        allow(Selective).to receive(:initialize_rspec_hooks)
+        allow(Selective).to receive(:initialize_rspec_reporting_hooks)
 
         Selective.initialize_collectors
         Selective.start_coverage
@@ -41,8 +41,8 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeWriterCollector do
 
     context "when selective is enabled" do
       before do
-        allow(Selective).to receive(:enabled?).and_return true
-        allow(Selective).to receive(:initialize_rspec_hooks)
+        allow(Selective).to receive(:report_callgraph?).and_return true
+        allow(Selective).to receive(:initialize_rspec_reporting_hooks)
 
         Selective.initialize_collectors
         Selective.start_coverage
@@ -60,8 +60,8 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeWriterCollector do
 
   describe "#data" do
     before do
-      allow(Selective).to receive(:enabled?).and_return true
-      allow(Selective).to receive(:initialize_rspec_hooks)
+      allow(Selective).to receive(:report_callgraph?).and_return true
+      allow(Selective).to receive(:initialize_rspec_reporting_hooks)
 
       Selective.initialize_collectors
       Selective.start_coverage

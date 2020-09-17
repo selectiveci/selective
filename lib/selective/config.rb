@@ -6,7 +6,8 @@ module Selective
     attr_accessor :backend_host
     attr_accessor :enabled_collector_classes
     attr_accessor :coverage_path
-    attr_accessor :enable_check
+    attr_accessor :report_callgraph_check
+    attr_accessor :select_tests_check
     attr_accessor :file_exclusion_check
     attr_accessor :webpacker_app_locations
 
@@ -35,7 +36,8 @@ module Selective
       @backend_host = ENV.fetch("SELECTIVE_BACKEND_HOST") { DEFAULT_BACKEND_HOST }
 
       @file_exclusion_check = proc { false }
-      @enable_check = lambda { !ENV["TEST_COVERAGE_ENABLED"].nil? }
+      @report_callgraph_check = proc { !ENV["SELECTIVE_REPORT_CALLGRAPH"].nil? }
+      @select_tests_check = proc { !ENV["SELECTIVE_SELECT_TESTS"].nil? }
       @sprockets_asset_collector_class = Collectors::SprocketsAssetCollector
       @coverage_path = Pathname.new(DEFAULT_COVERAGE_PATH)
       @webpacker_app_locations = [DEFAULT_WEBPACKER_LOCATION]
