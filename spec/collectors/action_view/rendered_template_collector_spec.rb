@@ -38,13 +38,21 @@ RSpec.describe Selective::Collectors::ActionView::RenderedTemplateCollector do
 
       it "is called" do
         mock_collector = double
+        mock_collector2 = double
         view = DummyView.new(::ActionView::LookupContext.new([view_path]), {})
 
-        expect(mock_collector).to receive(:add_covered_templates).with(view.lookup_context.find_template("foo.html.erb").identifier)
+        expect(mock_collector2).not_to receive(:add_covered_templates).with(view.lookup_context.find_template("foo.html.erb").identifier)
+        expect(collector).to receive(:add_covered_templates).with(view.lookup_context.find_template("foo.html.erb").identifier)
+
+        described_class.subscribe(mock_collector2)
         described_class.subscribe(mock_collector)
+
         expect(described_class.subscriber).to be_an_instance_of(ActiveSupport::Notifications::Fanout::Subscribers::Timed)
 
         view.render(template: "foo.html.erb")
+
+        described_class.unsubscribe
+        described_class.unsubscribe
       end
     end
   end

@@ -35,7 +35,7 @@ module Selective
       @backend_host = ENV.fetch("SELECTIVE_BACKEND_HOST") { DEFAULT_BACKEND_HOST }
 
       @file_exclusion_check = proc { false }
-      @enable_check = proc { !ENV["TEST_COVERAGE_ENABLED"].nil? }
+      @enable_check = lambda { !ENV["TEST_COVERAGE_ENABLED"].nil? }
       @sprockets_asset_collector_class = Collectors::SprocketsAssetCollector
       @coverage_path = Pathname.new(DEFAULT_COVERAGE_PATH)
       @webpacker_app_locations = [DEFAULT_WEBPACKER_LOCATION]

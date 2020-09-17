@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "coverage"
 module Selective
   module Collectors
     class RubyCoverageCollector
@@ -8,7 +9,7 @@ module Selective
       EXCLUDE_PATHS = %w[/spec /vendor]
 
       def initialize(root_path = Dir.pwd)
-        require "coverage"
+
         Coverage.start unless Coverage.running?
         @root_path = root_path
       end

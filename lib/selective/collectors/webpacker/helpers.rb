@@ -9,7 +9,7 @@ module Selective
         def javascript_packs_with_chunks_tag(*names, **options)
           precheck_locations_set
 
-          globs = names.flat_map { |name|
+          globs = names.flat_map do |name|
             app_home = javascript_app_home(name)
             raise("Unable to locate source location for javascript app #{name}") unless app_home
 
@@ -17,7 +17,7 @@ module Selective
               File.join(app_home, "src", "**.{scss,css,js}"),
               File.join(app_home, "package*.json")
             ]
-          }
+          end
           Selective.coverage_collectors.fetch(WebpackerAppCollector).add_covered_globs(*globs)
           super
         end

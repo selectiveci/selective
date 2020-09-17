@@ -17,11 +17,11 @@ RSpec.describe Selective::Config do
       expect(object.enable_check).to be_an_instance_of(Proc)
       expect(object.enable_check.call).to be false
       expect(object.sprockets_asset_collector_class)
-        .to eql(Selective::Collectors::SprocketsAssetCollector)
+        .to equal(Selective::Collectors::SprocketsAssetCollector)
       expect(object.coverage_path).to be_an_instance_of(Pathname)
       expect(object.coverage_path.to_s).to eql("/tmp/coverage-map.yml")
       expect(object.api_key).to eql(ENV.fetch("SELECTIVE_API_KEY", nil))
-      expect(object.backend_host).to eql("https://selective-ci.herokuapp.com")
+      expect(object.backend_host).to equal("https://selective-ci.herokuapp.com")
     end
 
     context "with host" do

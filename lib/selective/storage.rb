@@ -25,7 +25,6 @@ module Selective
         examples.inject(&:merge!)
       end
 
-      private
     end
 
     # @param [Pathname] path to store execution map

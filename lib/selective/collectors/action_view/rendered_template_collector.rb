@@ -8,7 +8,7 @@ module Selective
           attr_reader :subscriber
 
           def subscribe(collector)
-            @subscriber = ActiveSupport::Notifications.subscribe("!render_template.action_view") { |_name, _start, _finish, _id, payload|
+            @subscriber ||= ActiveSupport::Notifications.subscribe("!render_template.action_view") { |_name, _start, _finish, _id, payload|
               collector.add_covered_templates(payload.fetch(:identifier))
             }
           end
