@@ -85,6 +85,27 @@ module Selective
       end
     end
 
+    if defined? Minitest
+      puts 'Minitest defined'
+      module Selective::MinitestPlugin
+        def before_setup
+          super
+          Selective.collector.start_recording_code_coverage
+        end
+
+        def after_teardown
+          super
+          Selective.collector.write_code_coverage_artifact
+        end
+      end
+
+      class ::Minitest::Test
+        include Selective::MinitestPlugin
+      end
+
+      Minitest.after_run { Selective.collector.finalize }
+    end
+
     def start_coverage
       if report_callgraph?
         coverage_collectors.values.each do |coverage_collector|
