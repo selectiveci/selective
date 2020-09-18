@@ -45,6 +45,7 @@ module Selective
     def initialize_collectors
       @collector = Collector.new(config)
       initialize_rspec_reporting_hooks if defined?(RSpec)
+      initialize_minitest_reporting_hooks if defined?(Minitest)
     end
 
     def initialize_rspec_reporting_hooks
@@ -59,6 +60,11 @@ module Selective
           Selective.collector.finalize
         end
       end
+    end
+
+    def initialize_minitest_reporting_hooks
+      puts 'Loading Selective Minitest hooks'
+      require_relative 'selective/minitest'
     end
 
     def initialize_test_selection
@@ -83,27 +89,6 @@ module Selective
           suite.reporter.pending_examples.delete_if { |e| Selective.skipped_tests.include?(e.id) }
         end
       end
-    end
-
-    if defined? Minitest
-      puts 'Minitest defined'
-      module Selective::MinitestPlugin
-        def before_setup
-          super
-          Selective.collector.start_recording_code_coverage
-        end
-
-        def after_teardown
-          super
-          Selective.collector.write_code_coverage_artifact
-        end
-      end
-
-      class ::Minitest::Test
-        include Selective::MinitestPlugin
-      end
-
-      Minitest.after_run { Selective.collector.finalize }
     end
 
     def start_coverage
