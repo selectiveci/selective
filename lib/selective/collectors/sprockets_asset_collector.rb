@@ -11,7 +11,7 @@ module Selective
       end
 
       def collect
-        asset = ::Rails.application.assets&.fetch(asset_path, nil)
+        asset = Rails.application.assets.fetch(asset_path, nil)
         # It's not clear why an asset would not be found in the cache.  It happens but it seems to happen rarely and repeatably
         # If there is a bug with assets changes not triggering a test to run, look here to see if the asset was not included
         # as a dependency because it was not found in the cache

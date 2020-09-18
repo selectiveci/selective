@@ -9,7 +9,7 @@ RSpec.describe Selective::Collectors::SprocketsAssetCollector do
     Rails.application.assets = {'foo.css' => mock_double}
   end
 
-  describe "#collect" do
+  describe "to collect" do
     let(:subject) { described_class.new(bad_asset_path).collect } 
     let(:expectation) { "Skipping asset xyz because it was not found in the cache\n" }
 

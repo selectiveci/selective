@@ -25,12 +25,13 @@ RSpec.describe Selective::Config do
     end
 
     context "with host" do
+      let(:envvar) { "SELECTIVE_BACKEND_HOST" }
       before do
-        ENV["SELECTIVE_BACKEND_HOST"] = "xyz"
+        ENV[envvar] = "xyz"
       end
 
       after do
-        ENV.delete("SELECTIVE_BACKEND_HOST")
+        ENV.delete(envvar)
       end
 
       it "initializes" do
@@ -51,5 +52,53 @@ RSpec.describe Selective::Config do
         expect(object.api_key).to eql("the_api_key")
       end
     end
+
+    context "with select tests" do
+      let(:envvar) { "SELECTIVE_SELECT_TESTS" }
+      before do
+        ENV[envvar] = "xyz"
+      end
+
+      after do
+        ENV.delete(envvar)
+      end
+
+      it "initializes" do
+        expect(object.select_tests_check).to be_an_instance_of(Proc)
+        expect(object.select_tests_check.call).to be true
+      end
+
+      it "initializes without env" do
+        ENV.delete(envvar)
+
+        expect(object.select_tests_check).to be_an_instance_of(Proc)
+        expect(object.select_tests_check.call).to be false
+      end
+    end
+
+    context "with select report callgraph" do
+      let(:envvar) { "SELECTIVE_REPORT_CALLGRAPH" }
+      before do
+        ENV[envvar] = "xyz"
+      end
+
+      after do
+        ENV.delete(envvar)
+      end
+
+      it "initializes" do
+        expect(object.report_callgraph_check).to be_an_instance_of(Proc)
+        expect(object.report_callgraph_check.call).to be true
+      end
+
+      it "initializes without env" do
+        ENV.delete(envvar)
+
+        expect(object.report_callgraph_check).to be_an_instance_of(Proc)
+        expect(object.report_callgraph_check.call).to be false
+      end
+    end
+
+
   end
 end
