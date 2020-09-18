@@ -112,7 +112,7 @@ RSpec.describe Selective do
 
     let(:rspec_config) { RSpec::Core::Configuration.new }
     let(:collector) { double(:collector, start_recording_code_coverage: nil, write_code_coverage_artifact: nil, finalize: nil) }
-    let(:example) { double(:example, run: nil) }
+    let(:example) { double(:example, id: nil, run: nil) }
 
     before do
       allow(RSpec).to receive(:configure).and_yield(rspec_config)

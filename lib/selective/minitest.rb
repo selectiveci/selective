@@ -5,7 +5,9 @@ module Selective::MinitestPlugin
   end
 
   def after_teardown
-    Selective.collector.write_code_coverage_artifact
+    test_method = self.class.instance_method(name.to_s)
+    test_location = test_method.source_location.join(":")
+    Selective.collector.write_code_coverage_artifact(test_location)
     super
   end
 end

@@ -53,7 +53,7 @@ module Selective
         config.around(:example) do |example|
           Selective.collector.start_recording_code_coverage
           example.run
-          Selective.collector.write_code_coverage_artifact(example)
+          Selective.collector.write_code_coverage_artifact(example.id)
         end
 
         config.after(:suite) do

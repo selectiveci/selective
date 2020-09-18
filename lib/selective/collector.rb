@@ -23,7 +23,7 @@ module Selective
       end
     end
 
-    def write_code_coverage_artifact(example=nil)
+    def write_code_coverage_artifact(example_id)
       return unless Selective.report_callgraph?
 
       cleaned_coverage = {}.tap do |cleaned|
@@ -36,8 +36,7 @@ module Selective
         end
       end
 
-      key = example.present? ? example.id : map.keys.size
-      map[key] = cleaned_coverage if cleaned_coverage.present?
+      map[example_id] = cleaned_coverage if cleaned_coverage.present?
       check_dump_threshold
     end
 
