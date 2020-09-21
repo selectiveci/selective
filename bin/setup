@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -e
+
+##
+# Repeat a character
+# $1 the character to be repeated
+# $2 the number of times to repeat
+# ##
+repl() {
+    printf "$1"'%.s' $(eval "echo {1.."$(($2))"}")
+}
+
+##
+# Display the text for the given step
+# $1 the text for the step heading
+##
+step() {
+    DIVIDER=$(repl "*" ${#1}+2)
+    printf "\n$DIVIDER\n $1 \n$DIVIDER\n\n"
+}
+
+step "Creating .env"
+if [ ! -e "$(pwd)/.env" ]; then
+  touch $(pwd)/.env
+  echo RUBY_UID=$(id -u) > $(pwd)/.env
+  echo " Set RUBY_UID to $(id -u)"
+fi
+
+step "Ready to docker-compose up"
