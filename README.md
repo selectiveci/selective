@@ -12,7 +12,7 @@ gem 'selective'
 
 And then execute:
 
-    $ bundle
+$ bundle
 
 ## Usage
 
@@ -22,8 +22,8 @@ To accomplish this, it is recommended that the code below be run immediately at 
 beginning of testing (usually in spec_helper).
 
 ```ruby
-    require 'selective'
-    Selective.start
+require 'selective'
+Selective.start
 ```
 ## Development
 
@@ -34,9 +34,9 @@ Pull requests are welcome. If you're adding a new feature, please [submit an iss
 For convenience we have created a Docker development environment. Run the following commands to use it:
 
 ```bash
-    bin/setup # Creates a .env and writes the output of `id -u` to it
-    docker-compose up -d # Starts containers in the background
-    docker-compose exec gem bash # Access the gem container's bash prompt 
+bin/setup # Creates a .env and writes the output of `id -u` to it
+docker-compose up -d # Starts containers in the background
+docker-compose exec gem bash # Access the gem container's bash prompt 
 ```
 
 ### To contribute your code:
