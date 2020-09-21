@@ -23,7 +23,7 @@ beginning of testing (usually in spec_helper).
 
 ```ruby
     require 'selective'
-    Selective.initialize_collectors
+    Selective.start
 ```
 ## Development
 
