@@ -27,6 +27,17 @@ beginning of testing (usually in spec_helper).
 require 'selective'
 Selective.start
 ```
+
+### CI Setup
+
+| Environment Variable       | Description |
+|----------------------------|-------------|
+| SELECTIVE_API_KEY          | Set to api key created on Selective CI |
+| SELECTIVE_REPORT_CALLGRAPH | Set to `true` to enable coverage collection and reporting to Selective CI |
+| SELECTIVE_SELECT_TESTS     | Set to `true` to enable test selection |
+
+Typically, `SELECTIVE_REPORT_CALLGRAPH` and `SELECTIVE_SELECT_TESTS` would not set to `true` at the same time. `SELECTIVE_REPORT_CALLGRAPH` would be set to `true` when the test runs against the default branch. `SELECTIVE_SELECT_TESTS` would be set to `true` when the test suite is run against all other branches.
+
 ## Development
 
 Pull requests are welcome. If you're adding a new feature, please [submit an issue](https://github.com/selectiveci/selective/issues/new) as a preliminary step; that way you can be (moderately) sure that your pull request will be accepted.
@@ -49,15 +60,6 @@ docker-compose exec gem bash # Access the gem container's bash prompt
 4. Commit your changes `git commit -am "Boom"`
 5. Push to your branch `git push origin my_branch`
 6. Send a [pull request](https://github.com/selectiveci/selective/pulls)
-
-### Releasing
-
-To release a new [patch] version:
-
-1. With a clean working tree, use `rake bump:patch` to bump the version and stage the changes (you can make additional manual changes at this point if necessary).
-2. Use `rake release` commit/tag the release, build the gem, and push to GitHub/RubyGems.
-
-See `rake -T` for additional tasks.
 
 ### License
 
