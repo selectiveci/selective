@@ -12,7 +12,9 @@ gem 'selective'
 
 And then execute:
 
-$ bundle
+```bash
+bundle
+```
 
 ## Usage
 
