@@ -14,9 +14,7 @@ Gem::Specification.new do |spec|
   spec.summary = "Tools for collecting code coverage from tests"
   spec.description = "Tools for collecting code coverage and sending them to SelectiveCI"
 
-  spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  end
+  spec.files = Dir["lib/**/*"]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "railties", "< 7"
@@ -33,4 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "webpacker", "4.0.1"
   spec.add_development_dependency "webmock", "~> 3.8.3"
   spec.add_development_dependency "rspec_junit_formatter", "~> 0.4.1"
+  spec.add_development_dependency "bump", "~> 0.9.0"
 end
