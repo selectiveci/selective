@@ -18,7 +18,7 @@ RSpec.describe Selective::Config do
       expect(object.sprockets_asset_collector_class)
         .to eql(Selective::Collectors::SprocketsAssetCollector)
       expect(object.coverage_path).to be_a(Pathname)
-      expect(object.coverage_path.to_s).to eql("/tmp/coverage-map.yml")
+      expect(object.coverage_path.to_s).to match(%r{/tmp/.*\.yml})
       expect(object.api_key).to eql(ENV.fetch("SELECTIVE_API_KEY", nil))
     end
   end

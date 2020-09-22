@@ -24,7 +24,7 @@ module Selective
     ].freeze
 
     DEFAULT_BACKEND_HOST       = "https://selective-ci.herokuapp.com"
-    DEFAULT_COVERAGE_PATH      = "/tmp/coverage-map.yml"
+    DEFAULT_COVERAGE_PATH      = "/tmp"
     DEFAULT_WEBPACKER_LOCATION = File.join("app", "javascript").freeze
 
     private_constant :DEFAULT_BACKEND_HOST
@@ -39,7 +39,7 @@ module Selective
       @report_callgraph_check = proc { !ENV["SELECTIVE_REPORT_CALLGRAPH"].nil? }
       @select_tests_check = proc { !ENV["SELECTIVE_SELECT_TESTS"].nil? }
       @sprockets_asset_collector_class = Collectors::SprocketsAssetCollector
-      @coverage_path = Pathname.new(DEFAULT_COVERAGE_PATH)
+      @coverage_path = Pathname.new(DEFAULT_COVERAGE_PATH).join("#{SecureRandom.urlsafe_base64}.yml")
       @webpacker_app_locations = [DEFAULT_WEBPACKER_LOCATION]
     end
   end
