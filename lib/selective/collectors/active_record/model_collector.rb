@@ -15,21 +15,28 @@ module Selective
         end
 
         def add_covered_models(*models)
-          @covered_model_collection.merge(models)
+          models.each { |model| model < ::ActiveRecord::Base }
+          on_start unless covered_model_collection
+
+          covered_model_collection.merge(models)
         end
 
         def covered_files
           {}.tap do |coverage_data|
-            @covered_model_collection.each do |model|
+            covered_model_collection.each do |model|
               file = ModelFileFinder.new.file_path(model)
               next if file.nil?
 
               coverage_data[file] = data
             end
+
+            on_start
           end
         end
 
         private
+
+        attr_reader :covered_model_collection
 
         def set_hook
           raise "Not Implemented"

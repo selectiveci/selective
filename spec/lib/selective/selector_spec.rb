@@ -46,6 +46,21 @@ RSpec.describe Selective::Selector do
   describe ".git_diff_cmd" do
     let(:repository_return_value) { {"default_branch_name" => "foo-bar-branch-name"} }
     let(:test_from_diff_return_value) { {"tests" => [:foo, :bar]} }
+    let(:expected_cmd) { "git fetch origin foo-bar-branch-name && git diff origin/foo-bar-branch-name" }
+
+    before do
+      allow(Selective::Api).to receive(:request).with("repository", method: :get).and_return(repository_return_value)
+      allow(Selective::Api).to receive(:request).with("call_graphs/tests_from_diff", anything, method: :post).and_return(test_from_diff_return_value)
+    end
+
+    it "returns the git diff" do
+      expect(described_class.git_diff_cmd).to eql(expected_cmd)
+    end
+  end
+
+  describe ".git_diff" do
+    let(:repository_return_value) { {"default_branch_name" => "foo-bar-branch-name"} }
+    let(:test_from_diff_return_value) { {"tests" => [:foo, :bar]} }
     let(:system_call_return_value) { "foobar" }
     let(:expected_cmd) { "git fetch origin foo-bar-branch-name && git diff origin/foo-bar-branch-name" }
 
@@ -57,7 +72,7 @@ RSpec.describe Selective::Selector do
     end
 
     it "returns the git diff" do
-      expect(described_class.git_diff_cmd).to eql(expected_cmd)
+      expect(described_class.git_diff).to eql('foobar')
     end
   end
 end

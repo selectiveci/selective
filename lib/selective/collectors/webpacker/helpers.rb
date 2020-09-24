@@ -11,7 +11,6 @@ module Selective
 
           globs = names.flat_map do |name|
             app_home = javascript_app_home(name)
-            raise("Unable to locate source location for javascript app #{name}") unless app_home
 
             [
               File.join(app_home, "src", "**.{scss,css,js}"),
@@ -27,7 +26,7 @@ module Selective
             File.join(potential_app_root, name)
           }.detect do |potential_app_home|
             Dir.exist?(potential_app_home)
-          end
+          end || raise("Unable to locate source location for javascript app #{name}")
         end
 
         def precheck_locations_set

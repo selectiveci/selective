@@ -38,7 +38,7 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagHelper do
       end
 
       it "is not called" do
-        expect(mock_collector).not_to receive(:add_covered_globs)
+        expect(mock_collector).not_to receive(:add_covered_assets)
 
         view.render(inline: '<% javascript_include_tag "foo", extname: false %>')
         view.render(inline: '<% stylesheet_link_tag "foo" %>')

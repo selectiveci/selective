@@ -13,7 +13,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeWriterCollector do
     end
   end
 
-  let(:collector) { Selective.coverage_collectors[described_class] }
+  let(:collector) { Selective.coverage_collectors.fetch(described_class) }
 
   describe "#set_hook" do
     context "when selective is disabled" do

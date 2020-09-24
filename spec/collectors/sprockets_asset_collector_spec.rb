@@ -5,7 +5,7 @@ RSpec.describe Selective::Collectors::SprocketsAssetCollector do
   
   before do
     mock_double = double
-    allow(mock_double).to receive(:metadata).and_return({dependencies: ['foo.js']})
+    allow(mock_double).to receive(:metadata).and_return({dependencies: ['foo.js', 'bar.xyz']})
     Rails.application.assets = {'foo.css' => mock_double}
   end
 

@@ -10,6 +10,8 @@ RSpec.describe Selective::Collectors::ActiveRecord::ModelFileFinder do
     it "finds the path too rails models" do
       expect(finder.file_path(ADummy)).to eq(Rails.root.join("app", "models", "a_dummy.rb").to_s)
       expect(finder.file_path(BDummy)).to eq(Rails.root.join("app", "models", "b_dummy.rb").to_s)
+
+      expect(finder.file_path(B1Dummy)).to eq(Rails.root.join("app", "models", "b1_dummy.rb").to_s)
     end
 
     it "finds the path to namespaced modules" do

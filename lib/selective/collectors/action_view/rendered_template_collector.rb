@@ -22,7 +22,7 @@ module Selective
         end
 
         def initialize
-          self.class.subscribe(self) unless self.class.subscriber.present?
+          self.class.subscribe(self) unless self.class.subscriber
         end
 
         def on_start
@@ -30,7 +30,9 @@ module Selective
         end
 
         def add_covered_templates(*templates)
-          covered_templates_collection&.merge(templates)
+          on_start unless covered_templates_collection
+
+          covered_templates_collection.merge(templates)
         end
 
         def covered_files
@@ -38,6 +40,8 @@ module Selective
             covered_templates_collection.map do |template_file|
               coverage_data[template_file] = {template: true}
             end
+
+            on_start
           end
         end
 

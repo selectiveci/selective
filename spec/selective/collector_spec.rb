@@ -127,11 +127,37 @@ RSpec.describe Selective::Collector do
 
     before do
       collector.map_storage.dump({foo: {"bar" => "baz"}})
-      allow(collector).to receive(:`).and_return("foobar")
+      allow(collector).to receive(:git_ref).and_return("foobar")
+      allow(collector).to receive(:git_branch).and_return("branchbar")
     end
 
     it "returns the expected result" do
-      expect(subject).to eq({call_graph_data: {foo: ["bar"]}, git_branch: "foobar", git_ref: "foobar"})
+      expect(subject).to eq({call_graph_data: {foo: ["bar"]}, git_branch: "branchbar", git_ref: "foobar"})
+    end
+  end
+
+  describe "#git_ref" do
+    subject { collector.git_ref }
+
+    before do
+      allow(collector).to receive(:`).and_return("foobar\nbazy")
+    end
+
+    it "returns the expected result" do
+      expect(subject).to eq("foobarbazy")
+    end
+  end
+
+
+  describe "#git_branch" do
+    subject { collector.git_branch }
+
+    before do
+      allow(collector).to receive(:`).and_return("foobar\nbazy")
+    end
+
+    it "returns the expected result" do
+      expect(subject).to eq("foobarbazy")
     end
   end
 

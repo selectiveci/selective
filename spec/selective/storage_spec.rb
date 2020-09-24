@@ -45,8 +45,8 @@ RSpec.describe Selective::Storage do
               "foo" => {
                 "bar" => "baz"
             }
-                      }
-                              )
+           }
+         )
         end
       end
 

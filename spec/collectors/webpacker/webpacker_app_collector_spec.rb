@@ -18,7 +18,15 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
   let(:dummy_js_dir) { "spec/dummy/app/javascript" }
   let(:asset_glob) { "#{dummy_js_dir}/foo/src/**.{scss,css,js}" }
   let(:package_glob) { "#{dummy_js_dir}/foo/package*.json" }
-  let(:collector) { Selective.coverage_collectors[described_class] }
+  let(:collector) { Selective.coverage_collectors.fetch(described_class) }
+
+  before do
+    allow_any_instance_of(Selective::Config).
+      to receive(:enabled_collector_classes).
+      and_return([Selective::Collectors::Webpacker::WebpackerAppCollector,
+        Selective::Collectors::ActionView::AssetTagCollector])
+    allow(Selective::Collectors::ActionView::RenderedTemplateCollector).to receive(:subscribe).with(any_args).and_return(nil)
+  end
 
   describe "#add_covered_globs" do
     context "when selective is disabled" do

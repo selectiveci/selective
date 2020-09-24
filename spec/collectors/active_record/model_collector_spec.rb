@@ -38,10 +38,12 @@ RSpec.describe Selective::Collectors::ActiveRecord::ModelCollector do
   describe "#add_covered_models" do
     let(:object) { DummyCollector2.new }
     it "adds" do
-      object.on_start
-
       expect(object.add_covered_models(ADummy, BDummy)).to eql Set.new([ADummy, BDummy])
       expect(object.instance_variable_get("@covered_model_collection")).to eql Set.new([ADummy, BDummy])
+    end
+
+    it "rejects if not ActiveRecord classes" do
+      expect{ object.add_covered_models(ADummy.new) }.to raise_error StandardError
     end
   end
 
@@ -49,23 +51,24 @@ RSpec.describe Selective::Collectors::ActiveRecord::ModelCollector do
     let(:object) { DummyCollector2.new }
     it "adds" do
       object.on_start
-      object.add_covered_models(ADummy, BadModel, BDummy)
+      object.add_covered_models(ADummy, BadModel, B1Dummy)
 
       expect(object.covered_files).
         to eql({"#{Dir.pwd}/spec/dummy/app/models/a_dummy.rb" => [1, 2, 5],
-        "#{Dir.pwd}/spec/dummy/app/models/b_dummy.rb" => [1, 2, 5]})
+        "#{Dir.pwd}/spec/dummy/app/models/b1_dummy.rb" => [1, 2, 5]})
     end
-  end
 
-  describe "#covered_files" do
-    let(:object) { DummyCollector3.new }
     it "adds" do
-      object.on_start
+      object = DummyCollector3.new
       object.add_covered_models(ADummy, BadModel, BDummy)
 
       expect(object.covered_files).
         to eql({"#{Dir.pwd}/spec/dummy/app/models/a_dummy.rb" => nil,
         "#{Dir.pwd}/spec/dummy/app/models/b_dummy.rb" => nil})
+
+      expect(object.covered_files).to eql({})
+
+      expect(object.instance_variable_get("@covered_model_collection")).to eql Set.new
     end
   end
 end
