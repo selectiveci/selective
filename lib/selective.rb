@@ -63,8 +63,8 @@ module Selective
     end
 
     def initialize_minitest_reporting_hooks
-      puts 'Loading Selective Minitest hooks'
-      require_relative 'selective/minitest'
+      puts 'Loading Selective Minitest callgraph reporting hooks' if ENV['DEBUG']
+      require_relative 'selective/minitest/report_callgraph'
     end
 
     def initialize_test_selection
@@ -96,6 +96,8 @@ module Selective
     end
 
     def initialize_minitest_test_selection
+      puts 'Loading Selective Minitest test selection hooks' if ENV['DEBUG']
+      require_relative 'selective/minitest/test_selection'
     end
 
     def start_coverage
