@@ -1,4 +1,4 @@
-module Selective::MinitestPlugin
+module Selective::MinitestReportingPlugin
   def before_setup
     super
     Selective.collector.start_recording_code_coverage
@@ -13,7 +13,7 @@ module Selective::MinitestPlugin
 end
 
 class Minitest::Test
-  include Selective::MinitestPlugin
+  include Selective::MinitestReportingPlugin
 end
 
 Minitest.after_run do
