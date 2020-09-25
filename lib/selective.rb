@@ -70,7 +70,11 @@ module Selective
     def initialize_test_selection
       @selected_tests = []
       @skipped_tests = []
+      initialize_rspec_test_selection if defined?(RSpec)
+      initialize_minitest_test_selection if defined?(Minitest)
+    end
 
+    def initialize_rspec_test_selection
       RSpec.configure do |config|
         config.before(:suite) do |suite|
           Selective.selected_tests = Selective::Selector.tests_from_diff
@@ -89,6 +93,9 @@ module Selective
           suite.reporter.pending_examples.delete_if { |e| Selective.skipped_tests.include?(e.id) }
         end
       end
+    end
+
+    def initialize_minitest_test_selection
     end
 
     def start_coverage
