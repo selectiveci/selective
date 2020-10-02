@@ -4,6 +4,7 @@ module Selective
       def tests_from_diff
         request_body = {
           git_branch: default_branch_name,
+          sha: current_sha,
           diff: git_diff
         }
 
@@ -21,6 +22,10 @@ module Selective
       def git_diff
         `git fetch origin #{default_branch_name}`
         `git diff origin/#{default_branch_name}`
+      end
+
+      def current_sha
+        `git rev-parse HEAD`
       end
     end
   end
