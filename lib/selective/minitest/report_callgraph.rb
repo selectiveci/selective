@@ -17,6 +17,6 @@ class Minitest::Test
 end
 
 Minitest.after_run do
-  puts 'Finalizing Selective collector results' if ENV['DEBUG']
+  puts 'Finalizing Selective collector results'
   Selective.collector.finalize
 end

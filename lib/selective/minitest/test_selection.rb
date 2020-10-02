@@ -9,10 +9,16 @@ module Selective::MinitestSelectionPlugin
     puts "klass: #{klass}"
     puts "runnable_method: #{runnable_method}"
     puts "Selective.selected_tests: #{Selective.selected_tests}"
-    if true || Selective.selected_tests.blank? || (Selective.selected_tests & [example.id, example.file_path]).any?
-      super
+    test_method = klass.instance_method(runnable_method.to_s)
+    test_location = test_method.source_location.join(':')
+    puts "test_location: #{test_location}"
+    if Selective.selected_tests.blank? || (Selective.selected_tests & [test_location]).any?
+      output = super
+      puts "output: #{output.inspect}"
+      output
     else
-      Selective.skipped_tests << example.id
+      Selective.skipped_tests << test_location
+      "#{klass}\##{runnable_method}"
     end
   end
 end
