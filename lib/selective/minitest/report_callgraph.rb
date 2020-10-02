@@ -5,8 +5,6 @@ module Selective::MinitestReportingPlugin
   end
 
   def after_teardown
-    #test_method = self.class.instance_method(name.to_s)
-    #test_location = test_method.source_location.join(':')
     test_identifier = "#{self.class}##{name}"
     Selective.collector.write_code_coverage_artifact(test_identifier)
     super
