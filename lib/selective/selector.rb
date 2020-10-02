@@ -8,7 +8,6 @@ module Selective
         }
 
         body = Selective::Api.request("call_graphs/tests_from_diff", request_body, method: :post)
-        puts "tests_from_diff body: #{body}"
         body["tests"]
       end
 

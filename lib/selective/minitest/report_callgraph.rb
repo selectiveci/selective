@@ -8,7 +8,6 @@ module Selective::MinitestReportingPlugin
     #test_method = self.class.instance_method(name.to_s)
     #test_location = test_method.source_location.join(':')
     test_identifier = "#{self.class}##{name}"
-    puts "test_identifier: #{test_identifier}"
     Selective.collector.write_code_coverage_artifact(test_identifier)
     super
   end
@@ -19,6 +18,5 @@ class Minitest::Test
 end
 
 Minitest.after_run do
-  puts 'Finalizing Selective collector results'
   Selective.collector.finalize
 end

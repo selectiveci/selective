@@ -63,7 +63,6 @@ module Selective
     end
 
     def initialize_minitest_reporting_hooks
-      puts 'Loading Selective Minitest callgraph reporting hooks'
       require_relative 'selective/minitest/report_callgraph'
     end
 
@@ -96,7 +95,6 @@ module Selective
     end
 
     def initialize_minitest_test_selection
-      puts 'Loading Selective Minitest test selection hooks'
       require_relative 'selective/minitest/test_selection'
     end
 
