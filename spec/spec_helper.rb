@@ -1,6 +1,7 @@
 require "factory_bot"
 require "simplecov"
 require "webmock/rspec"
+require "minitest"
 
 SimpleCov.start "rails" do
   add_filter "lib/selective/version.rb"
