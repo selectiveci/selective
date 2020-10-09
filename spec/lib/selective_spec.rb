@@ -373,5 +373,15 @@ RSpec.describe Selective do
 
       expect(result).to be false
     end
+
+    it "returns true if excluded" do
+      Selective.config.file_exclusion_check = proc { |file| file.eql?(Pathname.new("foo")) }
+
+      result = described_class.exclude_file?(Pathname.new("foo"))
+
+      expect(result).to be true
+
+      Selective.config.file_exclusion_check = proc { |file| false }
+    end
   end
 end

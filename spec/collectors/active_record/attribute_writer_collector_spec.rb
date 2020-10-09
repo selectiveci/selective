@@ -13,7 +13,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeWriterCollector do
     end
   end
 
-  let(:collector) { Selective.coverage_collectors[described_class] }
+  let(:collector) { Selective.coverage_collectors.fetch(described_class) }
 
   describe "#set_hook" do
     context "when selective is disabled" do
@@ -46,6 +46,8 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeWriterCollector do
 
         Selective.initialize_collectors
         Selective.start_coverage
+
+        expect(collector.instance_variable_get(:@covered_model_collection)).to eql(Set.new)
       end
 
       it "is called" do

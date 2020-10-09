@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "coverage"
 module Selective
   module Collectors
     class RubyCoverageCollector
@@ -8,7 +9,7 @@ module Selective
       EXCLUDE_PATHS = %w[/spec /vendor]
 
       def initialize(root_path = Dir.pwd)
-        require "coverage"
+
         Coverage.start unless Coverage.running?
         @root_path = root_path
       end
@@ -19,9 +20,9 @@ module Selective
 
       def covered_files
         after = Coverage.peek_result
-        coverage = detect(before, after)
+        coverage = detect(after)
         {}.tap do |coverage_data|
-          coverage.each do |file, data|
+          coverage.each do |file,|
             next if Selective.exclude_file?(file)
 
             coverage_data[file] = true
@@ -33,13 +34,13 @@ module Selective
 
       attr_reader :before
 
-      def detect(before, after)
-        filter after.reject { |file_name, after_coverage| before[file_name] == after_coverage }.keys
+      def detect(after)
+        filter after.reject { |file_name, after_coverage| before[file_name].eql?(after_coverage) }.keys
       end
 
       def filter(paths)
         paths.select do |file_name|
-          file_name.start_with?(root_path) && exclude_paths.none? { |p| file_name.include?(p) }
+          file_name.start_with?(root_path) && exclude_paths.none? { |p| file_name.start_with?(p) }
         end
       end
 

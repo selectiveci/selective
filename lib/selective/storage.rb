@@ -11,6 +11,9 @@ module Selective
     attr_reader :path
 
     class << self
+      ALLOWABLE_TYPES = [Symbol].freeze
+      SEPARATOR = "---\n".freeze
+
       # Loads map from given path
       #
       # @param [Pathname] path to map
@@ -18,14 +21,12 @@ module Selective
       def load(path)
         raise NoFilesFoundError, "No file exists #{path}" unless path.exist?
 
-        examples = path.read.split("---\n").reject(&:empty?).map { |yaml|
-          YAML.safe_load(yaml, [Symbol])
+        examples = path.read.split(SEPARATOR).reject(&:empty?).map { |yaml|
+          YAML.safe_load(yaml, ALLOWABLE_TYPES)
         }
 
         examples.inject(&:merge!)
       end
-
-      private
     end
 
     # @param [Pathname] path to store execution map

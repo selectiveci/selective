@@ -31,7 +31,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AssociationCollector do
       a = ADummy.new
       a.association(:model_with_association)
 
-      expect(Selective.coverage_collectors[described_class].covered_files).to have_value(association_referenced: true)
+      expect(Selective.coverage_collectors.fetch(described_class).covered_files).to have_value(association_referenced: true)
     end
 
     context "when selective is diabled" do

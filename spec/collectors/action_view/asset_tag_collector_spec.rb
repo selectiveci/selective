@@ -22,7 +22,7 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagCollector do
   end
 
   describe "#on_start" do
-    let(:collector) { Selective.coverage_collectors[described_class] }
+    let(:collector) { Selective.coverage_collectors.fetch(described_class) }
 
     it "inits collection instance variable" do
       expect(collector.instance_variable_get("@covered_assets_collection")).to eql(Set.new)
@@ -31,7 +31,7 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagCollector do
 
   describe "#add_covered_assets" do
     let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
-    let(:covered_assets_collection) { Selective.coverage_collectors[described_class].instance_variable_get("@covered_assets_collection") }
+    let(:covered_assets_collection) { Selective.coverage_collectors.fetch(described_class).instance_variable_get("@covered_assets_collection") }
 
     it "adds assets to @covered_assets_collection", :init_view_and_add_assets do
       expect(covered_assets_collection).to include("foo.css")
@@ -41,7 +41,7 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagCollector do
 
   describe "#covered_files" do
     let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
-    let(:collector) { Selective.coverage_collectors[described_class] }
+    let(:collector) { Selective.coverage_collectors.fetch(described_class) }
     let(:sprocket_asset_double) { double }
 
     before do

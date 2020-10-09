@@ -86,7 +86,7 @@ RSpec.describe Selective::Collector do
     end
   end
 
-  context "#finalize" do
+  describe "#finalize" do
     subject { collector.finalize }
 
     let(:map) { {"./foo/bar_spec.rb[1,2]" => {"foo/bar.rb" => {"RSpec::Mocks::Double" => coverage_data}}} }
@@ -122,20 +122,46 @@ RSpec.describe Selective::Collector do
     end
   end
 
-  context "#payload" do
+  describe "#payload" do
     subject { collector.payload }
 
     before do
       collector.map_storage.dump({foo: {"bar" => "baz"}})
-      allow(collector).to receive(:`).and_return("foobar")
+      allow(collector).to receive(:git_ref).and_return("foobar")
+      allow(collector).to receive(:git_branch).and_return("branchbar")
     end
 
     it "returns the expected result" do
-      expect(subject).to eq({call_graph_data: {foo: ["bar"]}, git_branch: "foobar", git_ref: "foobar"})
+      expect(subject).to eq({call_graph_data: {foo: ["bar"]}, git_branch: "branchbar", git_ref: "foobar"})
     end
   end
 
-  context "#deliver_payload" do
+  describe "#git_ref" do
+    subject { collector.git_ref }
+
+    before do
+      allow(collector).to receive(:`).and_return("foobar\nbazy")
+    end
+
+    it "returns the expected result" do
+      expect(subject).to eq("foobarbazy")
+    end
+  end
+
+
+  describe "#git_branch" do
+    subject { collector.git_branch }
+
+    before do
+      allow(collector).to receive(:`).and_return("foobar\nbazy")
+    end
+
+    it "returns the expected result" do
+      expect(subject).to eq("foobarbazy")
+    end
+  end
+
+  describe "#deliver_payload" do
     subject { collector.deliver_payload(payload) }
 
     let(:payload) { {foo: "bar"}.to_json }
@@ -144,12 +170,12 @@ RSpec.describe Selective::Collector do
     # We will do better when this code gets
     # extracted out of here (very soon)
     it "sends the request" do
-      expect(Selective::Api).to receive(:request)
+      expect(Selective::Api).to receive(:request).with("call_graphs", payload, {method: :post})
       subject
     end
   end
 
-  context "#check_dump_threshold" do
+  describe "#check_dump_threshold" do
     subject { collector.check_dump_threshold }
 
     before do

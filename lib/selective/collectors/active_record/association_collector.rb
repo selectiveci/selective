@@ -9,6 +9,8 @@ module Selective
       class AssociationCollector < ModelCollector
         private
 
+        DATA = {association_referenced: true}.freeze
+
         def set_hook
           ActiveSupport.on_load(:active_record) do
             include AssociationHelper
@@ -16,7 +18,7 @@ module Selective
         end
 
         def data
-          {association_referenced: true}
+          DATA
         end
       end
     end

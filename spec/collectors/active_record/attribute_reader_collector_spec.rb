@@ -19,7 +19,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderCollector do
       a = ADummy.new
       a.attr1
 
-      expect(Selective.coverage_collectors[described_class].covered_files).to have_value(attribute_referenced: true)
+      expect(Selective.coverage_collectors.fetch(described_class).covered_files).to have_value(attribute_referenced: true)
     end
   end
 end

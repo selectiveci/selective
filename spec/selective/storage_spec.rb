@@ -33,7 +33,7 @@ RSpec.describe Selective::Storage do
         let(:path) { Pathname.new("does-not-exist.yml") }
 
         it "raises a NoFilesFoundError" do
-          expect { subject }.to raise_error(Selective::Storage::NoFilesFoundError)
+          expect { subject }.to raise_error(Selective::Storage::NoFilesFoundError, "No file exists #{path}")
         end
       end
 
@@ -44,18 +44,32 @@ RSpec.describe Selective::Storage do
               "bax" => "quux",
               "foo" => {
                 "bar" => "baz"
-              }
             }
-          )
+           }
+         )
+        end
+      end
+
+      context "when file exists and is invalid YAML" do
+        let(:path) { Pathname.new("spec/fixtures/bad_storage.yml") }
+
+        it "returns expected hash" do
+          expect { subject }.to raise_error(Psych::DisallowedClass, "Tried to load unspecified class: Date")
         end
       end
     end
   end
 
   describe "#clear!" do
-    let(:path) { Pathname.new("/tmp/clear-test.yml") }
+    let(:path) { Pathname.new(Tempfile.new("empter/clear-test")) }
 
     context "when the file does not exist" do
+      let(:path) { 
+        a = Pathname.new(Tempfile.new("empter/clear-test"))
+        a.delete
+        a
+       }
+
       it "does not raise an error" do
         expect(subject.path.exist?).to be false
         expect { subject.clear! }.not_to raise_error
@@ -63,8 +77,6 @@ RSpec.describe Selective::Storage do
     end
 
     context "when the file exists" do
-      before { File.write(path, "") }
-
       it "deletes the file" do
         expect { subject.clear! }.to change { subject.path.exist? }.from(true).to(false)
       end
@@ -72,7 +84,9 @@ RSpec.describe Selective::Storage do
   end
 
   describe "#dump" do
-    let(:path) { Pathname.new("/tmp/path/dump-test.yml") }
+    let(:path) { 
+      FileUtils.mkdir_p("/tmp/path#{Process.pid}")
+      Pathname.new(Tempfile.open("empercdump-test.yml", "/tmp/path#{Process.pid}")) }
     let(:data) { {"frog" => "cat"} }
 
     context "when subdirectories do not exist" do

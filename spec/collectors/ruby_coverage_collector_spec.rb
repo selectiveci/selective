@@ -91,9 +91,11 @@ RSpec.describe Selective::Collectors::RubyCoverageCollector do
     before do
       collector.instance_variable_set(:@before, before_peek_result)
       allow(Coverage).to receive(:peek_result).and_return(after_peek_result)
-      allow(Selective).to receive(:exclude_file?) { |file|
-        file == "#{Dir.pwd}/file1.rb"
-      }
+      Selective.config.file_exclusion_check = proc { |file| file.to_s.include?("file1") }
+    end
+
+    after do
+      Selective.config.file_exclusion_check = proc { false }
     end
 
     it "excludes files marked for exclusion in Selective config" do
