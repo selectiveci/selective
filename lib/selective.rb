@@ -14,6 +14,7 @@ require_relative "selective/collectors/action_view/rendered_template_collector"
 require_relative "selective/collectors/webpacker/webpacker_app_collector"
 require_relative "selective/collectors/sprockets_asset_collector"
 require_relative "selective/collector"
+require_relative "selective/minitest"
 require_relative "selective/selector"
 require_relative "selective/config"
 require_relative "selective/storage"
@@ -63,7 +64,7 @@ module Selective
     end
 
     def initialize_minitest_reporting_hooks
-      require_relative 'selective/minitest/report_callgraph'
+      Selective::Minitest::Reporting.hook
     end
 
     def initialize_test_selection
@@ -95,7 +96,7 @@ module Selective
     end
 
     def initialize_minitest_test_selection
-      require_relative 'selective/minitest/test_selection'
+      Selective::Minitest::Selection.hook
     end
 
     def start_coverage
