@@ -17,9 +17,9 @@ RSpec.describe Selective::Config do
       expect(object.report_callgraph_check).to be_a(Proc)
       expect(object.report_callgraph_check.call).to be false
       expect(object.sprockets_asset_collector_class)
-        .to equal(Selective::Collectors::SprocketsAssetCollector)
-      expect(object.coverage_path).to be_an_instance_of(Pathname)
-      expect(object.coverage_path.to_s).to eql("/tmp/coverage-map.yml")
+        .to eql(Selective::Collectors::SprocketsAssetCollector)
+      expect(object.coverage_path).to be_a(Pathname)
+      expect(object.coverage_path.to_s).to match(%r{/tmp/.*\.yml})
       expect(object.api_key).to eql(ENV.fetch("SELECTIVE_API_KEY", nil))
       expect(object.backend_host).to equal("https://selective-ci.herokuapp.com")
     end

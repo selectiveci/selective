@@ -19,6 +19,7 @@ RSpec.describe Selective::Selector do
     it "returns an array of specs" do
       expected_request_body = {
         git_branch: repository_return_value["default_branch_name"],
+        sha: system_call_return_value,
         diff: system_call_return_value
       }
       expect(described_class.tests_from_diff).to eq(test_from_diff_return_value["tests"])
