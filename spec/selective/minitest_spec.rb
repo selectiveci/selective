@@ -25,7 +25,7 @@ end
 
 class SelectionPluginTesterSuperclass
   def process_args(args=[])
-    @super_process_args = args
+    @superclass_args = args
   end
 end
 
@@ -77,24 +77,34 @@ RSpec.describe Selective::Minitest do
   describe Selective::Minitest::Selection do
     describe Selective::Minitest::Selection::Plugin do
       let(:selection_plugin_tester) { SelectionPluginTester.new }
+      let(:superclass_args) { selection_plugin_tester.instance_variable_get(:@superclass_args) }
 
-      it 'inserts name filter args from selected tests' do
-        expect(Selective::Selector).to receive(:tests_from_diff) do
-          [
-            'SampleTestClass#sample_test_method1',
-            'SampleTestClass#sample_test_method2'
-          ]
+      context 'when selected tests are returned' do
+        it 'inserts name filter args from selected tests' do
+          expect(Selective::Selector).to receive(:tests_from_diff) do
+            [
+              'SampleTestClass#sample_test_method1',
+              'SampleTestClass#sample_test_method2'
+            ]
+          end
+          selection_plugin_tester.process_args(['--foo', 'bar'])
+          expect(superclass_args).to eq(
+            [
+              '--foo',
+              'bar',
+              '--name',
+              '/SampleTestClass#sample_test_method1|SampleTestClass#sample_test_method2/',
+            ]
+          )
         end
-        selection_plugin_tester.process_args(['--foo', 'bar'])
-        args = selection_plugin_tester.instance_variable_get(:@super_process_args)
-        expect(args).to eq(
-          [
-            '--foo',
-            'bar',
-            '--name',
-            '/SampleTestClass#sample_test_method1|SampleTestClass#sample_test_method2/',
-          ]
-        )
+      end
+
+      context 'when no selected tests returned' do
+        it 'does not alter args' do
+          expect(Selective::Selector).to receive(:tests_from_diff).and_return([])
+          selection_plugin_tester.process_args(['--foo', 'bar'])
+          expect(superclass_args).to eq(['--foo', 'bar'])
+        end
       end
     end
 
