@@ -71,6 +71,11 @@ RSpec.describe Selective::Minitest do
           with(Selective::Minitest::Reporting::Plugin)
         Selective::Minitest::Reporting.hook
       end
+
+      it 'add finalize as an after_run' do
+        expect(::Minitest).to receive(:after_run)
+        Selective::Minitest::Reporting.hook
+      end
     end
   end
 
