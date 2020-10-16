@@ -32,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "webmock", "~> 3.8.3"
   spec.add_development_dependency "rspec_junit_formatter", "~> 0.4.1"
   spec.add_development_dependency "bump", "~> 0.9.0"
+  spec.add_development_dependency "minitest", "~> 5.14"
 end

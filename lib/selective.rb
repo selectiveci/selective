@@ -14,6 +14,7 @@ require_relative "selective/collectors/action_view/rendered_template_collector"
 require_relative "selective/collectors/webpacker/webpacker_app_collector"
 require_relative "selective/collectors/sprockets_asset_collector"
 require_relative "selective/collector"
+require_relative "selective/minitest"
 require_relative "selective/selector"
 require_relative "selective/config"
 require_relative "selective/storage"
@@ -45,6 +46,7 @@ module Selective
     def initialize_collectors
       @collector = Collector.new(config)
       initialize_rspec_reporting_hooks if defined?(RSpec)
+      initialize_minitest_reporting_hooks if defined?(Minitest)
     end
 
     def initialize_rspec_reporting_hooks
@@ -52,7 +54,7 @@ module Selective
         config.around(:example) do |example|
           Selective.collector.start_recording_code_coverage
           example.run
-          Selective.collector.write_code_coverage_artifact(example)
+          Selective.collector.write_code_coverage_artifact(example.id)
         end
 
         config.after(:suite) do
@@ -61,10 +63,18 @@ module Selective
       end
     end
 
+    def initialize_minitest_reporting_hooks
+      Selective::Minitest::Reporting.hook
+    end
+
     def initialize_test_selection
       @selected_tests = []
       @skipped_tests = []
+      initialize_rspec_test_selection if defined?(RSpec)
+      initialize_minitest_test_selection if defined?(Minitest)
+    end
 
+    def initialize_rspec_test_selection
       RSpec.configure do |config|
         config.before(:suite) do |suite|
           Selective.selected_tests = Selective::Selector.tests_from_diff
@@ -83,6 +93,10 @@ module Selective
           suite.reporter.pending_examples.delete_if { |e| Selective.skipped_tests.include?(e.id) }
         end
       end
+    end
+
+    def initialize_minitest_test_selection
+      Selective::Minitest::Selection.hook
     end
 
     def start_coverage

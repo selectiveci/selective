@@ -39,7 +39,7 @@ RSpec.describe Selective::Collector do
   end
 
   describe "#write_code_coverage_artifact" do
-    subject { collector.write_code_coverage_artifact(example) }
+    subject { collector.write_code_coverage_artifact(example.id) }
 
     let(:example) { double("example", id: "./foo/bar_spec.rb[1,2]") }
     let(:covered_files) { {"foo/bar.rb" => coverage_data} }
