@@ -1,43 +1,35 @@
 require "spec_helper"
 require "selective"
 
-#################################################################
-# Classes used in specs for including plugin modules
-#################################################################
-
-class ReportingPluginTesterSuperclass
-  def before_setup
-    @super_before_setup_called = true
-  end
-
-  def after_teardown
-    @super_after_teardown_called = true
-  end
-end
-
-class ReportingPluginTester < ReportingPluginTesterSuperclass
-  def name
-    'sample_test_method'
-  end
-
-  include Selective::Minitest::Reporting::Plugin
-end
-
-class SelectionPluginTesterSuperclass
-  def process_args(args=[])
-    @superclass_args = args
-  end
-end
-
-class SelectionPluginTester < SelectionPluginTesterSuperclass
-  include Selective::Minitest::Selection::Plugin
-end
-
-#################################################################
-# Specs
-#################################################################
-
 RSpec.describe Selective::Minitest do
+  class ReportingPluginTesterSuperclass
+    def before_setup
+      @super_before_setup_called = true
+    end
+
+    def after_teardown
+      @super_after_teardown_called = true
+    end
+  end
+
+  class ReportingPluginTester < ReportingPluginTesterSuperclass
+    def name
+      'sample_test_method'
+    end
+
+    include Selective::Minitest::Reporting::Plugin
+  end
+
+  class SelectionPluginTesterSuperclass
+    def process_args(args=[])
+      @superclass_args = args
+    end
+  end
+
+  class SelectionPluginTester < SelectionPluginTesterSuperclass
+    include Selective::Minitest::Selection::Plugin
+  end
+
   describe Selective::Minitest::Reporting do
     describe Selective::Minitest::Reporting::Plugin do
       let(:reporting_plugin_tester) { ReportingPluginTester.new }
