@@ -14,18 +14,15 @@ module Selective
           @covered_model_collection = Set.new
         end
 
-        def add_covered_models(*models)
-          @covered_model_collection&.merge(models)
-        end
-
         def add_covered_model(model)
-          @covered_model_collection&.add(model)
+          @covered_model_collection&.add(model.name)
         end
 
         def covered_files
           {}.tap do |coverage_data|
-            @covered_model_collection.each do |model|
-              file = ModelFileFinder.new.file_path(model)
+            @covered_model_collection.each do |model_name|
+              file = ModelFileFinder.new.file_path(model_name)
+              Thread.current[(model_name + "-selective-selective").to_sym] = nil
               next if file.nil?
 
               coverage_data[file] = data

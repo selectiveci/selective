@@ -5,7 +5,7 @@ module Selective
     module ActiveRecord
       module AssociationHelper
         def association(name)
-          Selective.coverage_collectors[AssociationCollector].add_covered_models(self.class)
+          Selective.coverage_collectors[AssociationCollector].add_covered_model(self.class)
           super
         end
       end

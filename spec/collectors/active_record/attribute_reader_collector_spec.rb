@@ -16,10 +16,12 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderCollector do
 
   describe "#data" do
     it "annotates #covered_files hash properly" do
-      a = ADummy.new
-      a.attr1
+      1.times { a = ADummy.new; a.attr1; a.attr1 }
+      1.times { b = BDummy.new; b.attr1; b.attr1 }
 
-      expect(Selective.coverage_collectors[described_class].covered_files).to have_value(attribute_referenced: true)
+      expect(Selective.coverage_collectors[described_class].covered_files).
+        to eql({"/gem/spec/dummy/app/models/a_dummy.rb"=>{:attribute_referenced=>true}, 
+          "/gem/spec/dummy/app/models/b_dummy.rb"=>{:attribute_referenced=>true}}     )
     end
   end
 end
