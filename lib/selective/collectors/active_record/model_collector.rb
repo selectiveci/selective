@@ -18,6 +18,10 @@ module Selective
           @covered_model_collection&.merge(models)
         end
 
+        def add_covered_model(model)
+          @covered_model_collection&.add(model)
+        end
+
         def covered_files
           {}.tap do |coverage_data|
             @covered_model_collection.each do |model|

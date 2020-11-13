@@ -5,7 +5,7 @@ module Selective
     module ActiveRecord
       module AttributeWriterHelper
         def _write_attribute(attr_name, value)
-          Selective.coverage_collectors[AttributeWriterCollector].add_covered_models(self.class)
+          Selective.coverage_collectors[AttributeWriterCollector].add_covered_model(self.class)
           super
         end
       end

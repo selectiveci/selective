@@ -16,6 +16,7 @@ module Selective
         end
 
         def data
+          # once per model
           {attribute_referenced: true}
         end
       end
