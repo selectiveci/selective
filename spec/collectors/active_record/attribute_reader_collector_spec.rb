@@ -21,6 +21,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderCollector do
 
       result = Selective.coverage_collectors[described_class].covered_files
 
+      expect(result).to be_a(Hash)
       expect(result.keys.size).to equal(2)
       expect(result.keys.first).to match(/spec\/dummy\/app\/models\/a_dummy\.rb/)
       expect(result.keys.last).to match(/spec\/dummy\/app\/models\/b_dummy\.rb/)
