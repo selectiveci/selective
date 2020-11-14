@@ -21,8 +21,10 @@ module Selective
         def covered_files
           {}.tap do |coverage_data|
             @covered_model_collection.each do |model_name|
-              file = ModelFileFinder.new.file_path(model_name)
+              # clear memoization done in reader/writer collectors
               Thread.current[(model_name + "-selective-selective").to_sym] = nil
+
+              file = ModelFileFinder.new.file_path(model_name)
               next if file.nil?
 
               coverage_data[file] = data
