@@ -20,6 +20,8 @@ module Selective
           body = Selective::Api.request("repository", method: :get)
           body["default_branch_name"]
         end
+      rescue
+        @default_branch_name = nil
       end
 
       def git_diff
