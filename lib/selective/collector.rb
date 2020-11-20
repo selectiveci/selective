@@ -68,6 +68,9 @@ module Selective
 
     def deliver_payload(payload)
       Selective::Api.request("call_graphs", payload, method: :post)
+    rescue
+      # TODO: display error
+      nil
     end
 
     def check_dump_threshold
