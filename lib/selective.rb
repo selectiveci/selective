@@ -81,7 +81,7 @@ module Selective
         end
 
         config.around(:example) do |example|
-          if Selective.selected_tests.blank? || (Selective.selected_tests & [example.id, example.file_path]).any?
+          if run_example?(example)
             example.run
           else
             Selective.skipped_tests << example.id
@@ -89,8 +89,8 @@ module Selective
         end
 
         config.after(:suite) do |suite|
-          suite.reporter.examples.delete_if { |e| Selective.skipped_tests.include?(e.id) }
-          suite.reporter.pending_examples.delete_if { |e| Selective.skipped_tests.include?(e.id) }
+          suite.reporter.examples.delete_if(&method(:skipped_test?))
+          suite.reporter.pending_examples.delete_if(&method(:skipped_test?))
         end
       end
     end
@@ -117,6 +117,16 @@ module Selective
 
     def exclude_file?(file)
       config.file_exclusion_check.call(file)
+    end
+
+    def run_example?(example)
+      return true if Selective.selected_tests.blank?
+
+      (Selective.selected_tests & [example.id, example.file_path]).any?
+    end
+
+    def skipped_test?(example)
+      Selective.skipped_tests.include?(example.id)
     end
   end
 end
