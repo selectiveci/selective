@@ -10,6 +10,9 @@ module Selective
 
         body = Selective::Api.request("call_graphs/tests_from_diff", request_body, method: :post)
         body["tests"]
+      rescue
+        # TODO: display error
+        []
       end
 
       def default_branch_name
