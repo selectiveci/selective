@@ -9,14 +9,18 @@ module Selective
 
       # Create the HTTP objects
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") { |http|
-        if method == :get
-          request = Net::HTTP::Get.new(uri.request_uri, headers)
-        elsif method == :post
-          request = Net::HTTP::Post.new(uri.request_uri, headers)
-        else
-          raise "Invalid method"
+        request = case method
+          when :get
+            Net::HTTP::Get.new(uri.request_uri, headers)
+          when :post
+            Net::HTTP::Post.new(uri.request_uri, headers)
+          else
+            raise "Invalid method"
         end
-        request.body = body.to_json if body.present?
+
+        if body.present?
+          request.body = body.to_json
+        end
 
         # Send the request
         http.request(request)
