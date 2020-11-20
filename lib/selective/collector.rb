@@ -18,18 +18,17 @@ module Selective
     def start_recording_code_coverage
       return unless Selective.report_callgraph?
 
-      coverage_collectors.each do |_coverage_collector_class, coverage_collector|
-        coverage_collector.on_start
-      end
+      coverage_collectors.each_value(&:on_start)
     end
 
     def write_code_coverage_artifact(example_id)
       return unless Selective.report_callgraph?
 
       cleaned_coverage = {}.tap do |cleaned|
-        coverage_collectors.values.each do |coverage_collector|
+        coverage_collectors.each_value do |coverage_collector|
           coverage_collector.covered_files.each do |covered_file, coverage_data|
             next if Selective.exclude_file?(covered_file)
+
             cleaned[covered_file] ||= {}
             cleaned[covered_file][coverage_collector.class.name] = coverage_data
           end
