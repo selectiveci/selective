@@ -102,7 +102,7 @@ module Selective
     def start_coverage
       return unless report_callgraph?
 
-      coverage_collectors.values.each do |coverage_collector|
+      coverage_collectors.each_value do |coverage_collector|
         coverage_collector.on_start
       end
     end
