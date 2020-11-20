@@ -36,14 +36,19 @@ module Selective
         end
       end
 
-      map[example_id] = cleaned_coverage if cleaned_coverage.present?
+      if cleaned_coverage.present?
+        map[example_id] = cleaned_coverage
+      end
+
       check_dump_threshold
     end
 
     def finalize
       return unless Selective.report_callgraph?
 
-      map_storage.dump(map) if map.size.positive?
+      if map.any?
+        map_storage.dump(map)
+      end
 
       # If by some chance no coverage information
       # has been written, there is nothing to

@@ -23,7 +23,9 @@ module Selective
       }
 
       # Parse response
-      JSON.parse(response.body) if response.body.present?
+      if response.body.present?
+        JSON.parse(response.body)
+      end
     end
   end
 end
