@@ -100,10 +100,10 @@ module Selective
     end
 
     def start_coverage
-      if report_callgraph?
-        coverage_collectors.values.each do |coverage_collector|
-          coverage_collector.on_start
-        end
+      return unless report_callgraph?
+
+      coverage_collectors.values.each do |coverage_collector|
+        coverage_collector.on_start
       end
     end
 
