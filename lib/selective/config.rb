@@ -23,8 +23,8 @@ module Selective
       Selective::Collectors::Webpacker::WebpackerAppCollector
     ].freeze
 
-    DEFAULT_BACKEND_HOST       = "https://selective-ci.herokuapp.com"
-    DEFAULT_COVERAGE_PATH      = "/tmp"
+    DEFAULT_BACKEND_HOST = "https://selective-ci.herokuapp.com"
+    DEFAULT_COVERAGE_PATH = "/tmp"
     DEFAULT_WEBPACKER_LOCATION = File.join("app", "javascript").freeze
 
     private_constant :DEFAULT_BACKEND_HOST
