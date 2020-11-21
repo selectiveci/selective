@@ -19,6 +19,7 @@ require_relative "selective/selector"
 require_relative "selective/config"
 require_relative "selective/storage"
 require_relative "selective/api"
+require 'cucumber/rails'
 
 module Selective
   class << self
@@ -47,6 +48,7 @@ module Selective
       @collector = Collector.new(config)
       initialize_rspec_reporting_hooks if defined?(RSpec)
       initialize_minitest_reporting_hooks if defined?(Minitest)
+      initialize_cucumber_reporting_hooks if defined?(Cucumber)
     end
 
     def initialize_rspec_reporting_hooks
@@ -65,6 +67,22 @@ module Selective
 
     def initialize_minitest_reporting_hooks
       Selective::Minitest::Reporting.hook
+    end
+
+    def initialize_cucumber_reporting_hooks
+      Around do |scenario, block|
+        Selective.collector.start_recording_code_coverage
+        puts 'around'
+        block.call
+        Selective.collector.write_code_coverage_artifact(scenario.id)
+      end
+
+      AfterConfiguration do |config|
+        config.on_event :test_run_finished do |event|
+          puts 'test run finished'
+          Selective.collector.finalize
+        end
+      end
     end
 
     def initialize_test_selection
