@@ -71,14 +71,14 @@ module Selective
 
     def initialize_cucumber_reporting_hooks
       puts 'intialize cucumber reporting hooks'
-      Around do |scenario, block|
+      Cucumber::Glue::Dsl::Around do |scenario, block|
         Selective.collector.start_recording_code_coverage
         puts 'around'
         block.call
         Selective.collector.write_code_coverage_artifact(scenario.id)
       end
 
-      AfterConfiguration do |config|
+      Cucumber::Glue::Dsl::AfterConfiguration do |config|
         config.on_event :test_run_finished do |event|
           puts 'test run finished'
           Selective.collector.finalize
