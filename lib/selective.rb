@@ -70,6 +70,7 @@ module Selective
     end
 
     def initialize_cucumber_reporting_hooks
+      puts 'intialize cucumber reporting hooks'
       Around do |scenario, block|
         Selective.collector.start_recording_code_coverage
         puts 'around'
