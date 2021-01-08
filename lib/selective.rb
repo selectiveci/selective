@@ -78,7 +78,7 @@ module Selective
         Selective.collector.start_recording_code_coverage
         puts 'around'
         block.call
-        Selective.collector.write_code_coverage_artifact(scenario.id)
+        Selective.collector.write_code_coverage_artifact(scenario.location)
       end
 
       dsl.AfterConfiguration do |config|
@@ -140,11 +140,11 @@ module Selective
       dsl.Around do |scenario, block|
         puts 'around'
         block.call
-        #if Selective.selected_tests.blank? || (Selective.selected_tests & [example.id, example.file_path]).any?
-        #  block.call
-        #else
-        #  Selective.skipped_tests << example.id
-        #end
+        if Selective.selected_tests.blank? || (Selective.selected_tests & [scenario.location]).any?
+          block.call
+        else
+          Selective.skipped_tests << scenario.location
+        end
       end
     end
 
