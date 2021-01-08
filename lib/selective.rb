@@ -94,6 +94,7 @@ module Selective
       @skipped_tests = []
       initialize_rspec_test_selection if defined?(RSpec)
       initialize_minitest_test_selection if defined?(Minitest)
+      initialize_cucumber_test_selection if defined?(Cucumber)
     end
 
     def initialize_rspec_test_selection
@@ -119,6 +120,32 @@ module Selective
 
     def initialize_minitest_test_selection
       Selective::Minitest::Selection.hook
+    end
+
+    def initialize_cucumber_test_selection
+      dsl = Object.new.extend(Cucumber::Glue::Dsl)
+      dsl.AfterConfiguration do |config|
+        config.on_event :test_run_started do |event|
+          puts 'test run started'
+          Selective.selected_tests = Selective::Selector.tests_from_diff
+        end
+
+        config.on_event :test_run_finished do |event|
+          puts 'test run finished'
+          #suite.reporter.examples.delete_if { |e| Selective.skipped_tests.include?(e.id) }
+          #suite.reporter.pending_examples.delete_if { |e| Selective.skipped_tests.include?(e.id)
+        end
+      end
+
+      dsl.Around do |scenario, block|
+        puts 'around'
+        block.call
+        #if Selective.selected_tests.blank? || (Selective.selected_tests & [example.id, example.file_path]).any?
+        #  block.call
+        #else
+        #  Selective.skipped_tests << example.id
+        #end
+      end
     end
 
     def start_coverage
