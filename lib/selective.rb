@@ -76,7 +76,7 @@ module Selective
       dsl = Object.new.extend(Cucumber::Glue::Dsl)
       dsl.Around do |scenario, block|
         Selective.collector.start_recording_code_coverage
-        puts 'around'
+        log 'around'
         block.call
         Selective.collector.write_code_coverage_artifact(scenario.location)
       end
@@ -84,7 +84,7 @@ module Selective
       dsl.AfterConfiguration do |config|
         config.on_event :test_run_finished do |event|
           puts 'test run finished'
-          Selective.collector.finalize
+          #Selective.collector.finalize
         end
       end
     end
@@ -138,8 +138,7 @@ module Selective
       end
 
       dsl.Around do |scenario, block|
-        puts 'around'
-        block.call
+        log 'around'
         if Selective.selected_tests.blank? || (Selective.selected_tests & [scenario.location]).any?
           block.call
         else

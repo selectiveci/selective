@@ -41,6 +41,7 @@ module Selective
     end
 
     def finalize
+      puts 'finalize'
       return unless Selective.report_callgraph?
 
       map_storage.dump(map) if map.size.positive?
@@ -67,6 +68,7 @@ module Selective
     end
 
     def deliver_payload(payload)
+      puts 'deliver_payload'
       Selective::Api.request("call_graphs", payload, method: :post)
     end
 
