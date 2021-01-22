@@ -78,13 +78,13 @@ module Selective
         Selective.collector.start_recording_code_coverage
         log 'around'
         block.call
-        Selective.collector.write_code_coverage_artifact(scenario.location)
+        Selective.collector.write_code_coverage_artifact(scenario.location.to_s)
       end
 
       dsl.AfterConfiguration do |config|
         config.on_event :test_run_finished do |event|
           puts 'test run finished'
-          #Selective.collector.finalize
+          Selective.collector.finalize
         end
       end
     end
@@ -139,10 +139,10 @@ module Selective
 
       dsl.Around do |scenario, block|
         log 'around'
-        if Selective.selected_tests.blank? || (Selective.selected_tests & [scenario.location]).any?
+        if Selective.selected_tests.blank? || (Selective.selected_tests & [scenario.location.to_s]).any?
           block.call
         else
-          Selective.skipped_tests << scenario.location
+          Selective.skipped_tests << scenario.location.to_s
         end
       end
     end

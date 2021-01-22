@@ -19,7 +19,7 @@ module Selective
 
         ::Minitest.after_run do
           puts 'minitest after_run'
-          Selective.collector.finalize
+          #Selective.collector.finalize
         end
       end
     end
