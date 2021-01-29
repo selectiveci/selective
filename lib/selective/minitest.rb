@@ -18,7 +18,6 @@ module Selective
         ::Minitest::Test.send(:include, Selective::Minitest::Reporting::Plugin)
 
         ::Minitest.after_run do
-          puts 'minitest after_run'
           Selective.collector.finalize
         end
       end

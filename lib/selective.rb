@@ -40,13 +40,11 @@ module Selective
         yield @config
       end
 
-      puts 'start'
       initialize_collectors if report_callgraph?
       initialize_test_selection if select_tests?
     end
 
     def initialize_collectors
-      puts 'initialize collectors'
       @collector = Collector.new(config)
       initialize_rspec_reporting_hooks if defined?(RSpec)
       initialize_minitest_reporting_hooks if defined?(Minitest)
@@ -72,11 +70,9 @@ module Selective
     end
 
     def initialize_cucumber_reporting_hooks
-      puts 'intialize cucumber reporting hooks'
       dsl = Object.new.extend(Cucumber::Glue::Dsl)
       dsl.Around do |scenario, block|
         Selective.collector.start_recording_code_coverage
-        log 'around'
         block.call
         Selective.collector.write_code_coverage_artifact(scenario.location.to_s)
       end
@@ -87,7 +83,6 @@ module Selective
       unless defined?(Minitest)
         dsl.AfterConfiguration do |config|
           config.on_event :test_run_finished do |event|
-            puts 'test run finished'
             Selective.collector.finalize
           end
         end
@@ -131,19 +126,11 @@ module Selective
       dsl = Object.new.extend(Cucumber::Glue::Dsl)
       dsl.AfterConfiguration do |config|
         config.on_event :test_run_started do |event|
-          puts 'test run started'
           Selective.selected_tests = Selective::Selector.tests_from_diff
-        end
-
-        config.on_event :test_run_finished do |event|
-          puts 'test run finished'
-          #suite.reporter.examples.delete_if { |e| Selective.skipped_tests.include?(e.id) }
-          #suite.reporter.pending_examples.delete_if { |e| Selective.skipped_tests.include?(e.id)
         end
       end
 
       dsl.Around do |scenario, block|
-        log 'around'
         if Selective.selected_tests.blank? || (Selective.selected_tests & [scenario.location.to_s]).any?
           block.call
         else
