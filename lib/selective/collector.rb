@@ -3,7 +3,6 @@ module Selective
     attr_accessor :coverage_collectors, :config, :map_storage, :map
 
     DUMP_THRESHOLD = 10
-    ROOT = "#{Rails.root}/".freeze
 
     def initialize(config)
       @config = config
@@ -56,9 +55,10 @@ module Selective
 
     def payloads
       data = Selective::Storage.load(config.coverage_path)
+      root = "#{Rails.root}/"
 
       data.each_slice(1000).map do |slice|
-        call_graph_data = Hash[slice.map { |k, v| [k, v.keys.map { |f| f.sub(ROOT, "") }] }]
+        call_graph_data = Hash[slice.map { |k, v| [k, v.keys.map { |f| f.sub(root, "") }] }]
         call_graph_hash(call_graph_data)
       end
     end
