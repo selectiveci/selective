@@ -3,6 +3,7 @@ module Selective
     attr_accessor :coverage_collectors, :config, :map_storage, :map
 
     DUMP_THRESHOLD = 10
+    ROOT = "#{Rails.root}/".freeze
 
     def initialize(config)
       @config = config
@@ -50,15 +51,19 @@ module Selective
       # deliver.
       return unless config.coverage_path.exist?
 
-      deliver_payload(payload)
+      deliver_payloads(payloads)
     end
 
-    def payload
+    def payloads
       data = Selective::Storage.load(config.coverage_path)
-      call_graph_data = Hash[data.map { |k, v| [k, v.keys.map { |f| f.sub("#{Rails.root}/", "") }] }]
-      git_branch = `git rev-parse --abbrev-ref HEAD`.delete("\n")
-      git_ref = `git rev-parse HEAD`.delete("\n")
 
+      data.each_slice(1000).map do |slice|
+        call_graph_data = Hash[slice.map { |k, v| [k, v.keys.map { |f| f.sub(ROOT, "") }] }]
+        call_graph_hash(call_graph_data)
+      end
+    end
+
+    def call_graph_hash(call_graph_data)
       {
         call_graph_data: call_graph_data,
         git_branch: git_branch,
@@ -66,8 +71,18 @@ module Selective
       }
     end
 
-    def deliver_payload(payload)
-      Selective::Api.request("call_graphs", payload, method: :post)
+    def git_branch
+      `git rev-parse --abbrev-ref HEAD`.delete("\n")
+    end
+
+    def git_ref
+      `git rev-parse HEAD`.delete("\n")
+    end
+
+    def deliver_payloads(payloads)
+      payloads.each do |payload|
+        Selective::Api.request("call_graphs", payload, method: :post)
+      end
     end
 
     def check_dump_threshold

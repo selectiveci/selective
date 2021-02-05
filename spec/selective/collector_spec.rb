@@ -91,11 +91,11 @@ RSpec.describe Selective::Collector do
 
     let(:map) { {"./foo/bar_spec.rb[1,2]" => {"foo/bar.rb" => {"RSpec::Mocks::Double" => coverage_data}}} }
     let(:coverage_data) { double("coverage_data") }
-    let(:payload) { double("payload") }
+    let(:payloads) { [double("payload")] }
 
     before do
-      allow(collector).to receive(:payload).and_return(payload)
-      allow(collector).to receive(:deliver_payload)
+      allow(collector).to receive(:payloads).and_return(payloads)
+      allow(collector).to receive(:deliver_payloads)
     end
 
     context "when Selective is enabled" do
@@ -107,23 +107,23 @@ RSpec.describe Selective::Collector do
           subject
         end
 
-        it "delivers the payload" do
-          expect(collector).to have_received(:deliver_payload).with(payload)
+        it "delivers the payloads" do
+          expect(collector).to have_received(:deliver_payloads).with(payloads)
         end
       end
 
       context "when the map is empty/no coverage file exists" do
         before { subject }
 
-        it "does not deliver the payload" do
-          expect(collector).not_to have_received(:deliver_payload)
+        it "does not deliver the payloads" do
+          expect(collector).not_to have_received(:deliver_payloads)
         end
       end
     end
   end
 
-  context "#payload" do
-    subject { collector.payload }
+  context "#payloads" do
+    subject { collector.payloads }
 
     before do
       collector.map_storage.dump({foo: {"bar" => "baz"}})
@@ -131,14 +131,14 @@ RSpec.describe Selective::Collector do
     end
 
     it "returns the expected result" do
-      expect(subject).to eq({call_graph_data: {foo: ["bar"]}, git_branch: "foobar", git_ref: "foobar"})
+      expect(subject).to eq([{call_graph_data: {foo: ["bar"]}, git_branch: "foobar", git_ref: "foobar"}])
     end
   end
 
-  context "#deliver_payload" do
-    subject { collector.deliver_payload(payload) }
+  context "#deliver_payloads" do
+    subject { collector.deliver_payloads(payloads) }
 
-    let(:payload) { {foo: "bar"}.to_json }
+    let(:payloads) { [{foo: "bar"}.to_json] }
 
     # This is admittedly a very poor test
     # We will do better when this code gets

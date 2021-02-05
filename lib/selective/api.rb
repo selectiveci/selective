@@ -23,11 +23,11 @@ module Selective
       end
 
       # Parse response
-      puts "Now: #{Time.now}"
+      puts "Now: #{Time.now.strftime('%Y-%m-%d %H:%M:%S.%9N %z')}"
       puts "Selective Response: #{response.inspect}"
       puts "Selective Body: #{response.body}"
 
-      return unless response.body.present? && !response.status.equal?(204)
+      return unless response.body.present? && !response.code.eql?("204")
 
       JSON.parse(response.body)
     end
