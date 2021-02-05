@@ -57,6 +57,7 @@ module Selective
       data = Selective::Storage.load(config.coverage_path)
       root = "#{Rails.root}/"
 
+      puts "Data size: #{data.size}"
       data.each_slice(500).map do |slice|
         call_graph_data = Hash[slice.map { |k, v| [k, v.keys.map { |f| f.sub(root, "") }] }]
         call_graph_hash(call_graph_data)
