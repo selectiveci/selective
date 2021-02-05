@@ -19,7 +19,6 @@ require_relative "selective/selector"
 require_relative "selective/config"
 require_relative "selective/storage"
 require_relative "selective/api"
-require 'cucumber/rails'
 
 module Selective
   class << self
@@ -70,7 +69,7 @@ module Selective
     end
 
     def initialize_cucumber_reporting_hooks
-      dsl = Object.new.extend(Cucumber::Glue::Dsl)
+      dsl = init_cucumber_dsl
       dsl.Around do |scenario, block|
         Selective.collector.start_recording_code_coverage
         block.call
@@ -123,7 +122,7 @@ module Selective
     end
 
     def initialize_cucumber_test_selection
-      dsl = Object.new.extend(Cucumber::Glue::Dsl)
+      dsl = init_cucumber_dsl
       dsl.AfterConfiguration do |config|
         config.on_event :test_run_started do |event|
           Selective.selected_tests = Selective::Selector.tests_from_diff
@@ -157,6 +156,14 @@ module Selective
 
     def exclude_file?(file)
       config.file_exclusion_check.call(file)
+    end
+
+    private
+
+    def init_cucumber_dsl
+      # This line is necessary to ensure rb_language is defined
+      Cucumber::Glue::RegistryAndMore.new(Cucumber::Runtime.new, Cucumber::Configuration.new)
+      Object.new.extend(Cucumber::Glue::Dsl)
     end
   end
 end
