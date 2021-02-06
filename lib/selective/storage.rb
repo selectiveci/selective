@@ -35,7 +35,9 @@ module Selective
 
     # Removes storage file
     def clear!
-      path.delete if path.exist?
+      return unless path.exist?
+
+      path.delete
     end
 
     # Writes data to storage file

@@ -9,7 +9,9 @@ module Selective
 
       def initialize(root_path = Dir.pwd)
         require "coverage"
-        Coverage.start unless Coverage.running?
+        unless Coverage.running?
+          Coverage.start
+        end
         @root_path = root_path
       end
 
