@@ -24,6 +24,7 @@ module Selective
 
         def initialize
           RenderedTemplateCollector.subscribe(self) unless RenderedTemplateCollector.subscriber.present?
+          @seconds_adding_covered = 0
         end
 
         def on_start

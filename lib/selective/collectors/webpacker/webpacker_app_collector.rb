@@ -12,6 +12,7 @@ module Selective
           ActiveSupport.on_load(:action_view) do
             prepend Selective::Collectors::Webpacker::Helpers
           end
+          @seconds_adding_covered = 0
         end
 
         def on_start
