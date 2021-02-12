@@ -10,7 +10,7 @@ module Selective
 
         def initialize
           set_hook
-          @seconds_adding_covere = 0
+          @seconds_adding_covered = 0
         end
 
         def on_start
