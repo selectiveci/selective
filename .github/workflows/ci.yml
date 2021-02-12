@@ -3,6 +3,7 @@ on: [push]
 
 env:
   CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
 jobs:
   test:

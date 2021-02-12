@@ -14,10 +14,10 @@ module Selective
           end
 
           def unsubscribe
-            if @subscriber
-              ActiveSupport::Notifications.unsubscribe(@subscriber)
-              @subscriber = nil
-            end
+            return unless @subscriber
+
+            ActiveSupport::Notifications.unsubscribe(@subscriber)
+            @subscriber = nil
           end
         end
 
