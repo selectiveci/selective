@@ -18,32 +18,36 @@ module Selective
     def start_recording_code_coverage
       return unless Selective.report_callgraph?
 
-      coverage_collectors.each do |_coverage_collector_class, coverage_collector|
-        coverage_collector.on_start
-      end
+      coverage_collectors.each_value(&:on_start)
     end
 
     def write_code_coverage_artifact(example_id)
       return unless Selective.report_callgraph?
 
       cleaned_coverage = {}.tap do |cleaned|
-        coverage_collectors.values.each do |coverage_collector|
+        coverage_collectors.each_value do |coverage_collector|
           coverage_collector.covered_files.each do |covered_file, coverage_data|
             next if Selective.exclude_file?(covered_file)
+
             cleaned[covered_file] ||= {}
             cleaned[covered_file][coverage_collector.class.name] = coverage_data
           end
         end
       end
 
-      map[example_id] = cleaned_coverage if cleaned_coverage.present?
+      if cleaned_coverage.present?
+        map[example_id] = cleaned_coverage
+      end
+
       check_dump_threshold
     end
 
     def finalize
       return unless Selective.report_callgraph?
 
-      map_storage.dump(map) if map.size.positive?
+      if map.any?
+        map_storage.dump(map)
+      end
 
       # If by some chance no coverage information
       # has been written, there is nothing to

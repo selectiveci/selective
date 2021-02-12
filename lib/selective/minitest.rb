@@ -30,8 +30,8 @@ module Selective
         def process_args(args = [])
           Selective.selected_tests = Selective::Selector.tests_from_diff
           if Selective.selected_tests.any?
-            regex = '/' + Selective.selected_tests.join('|') + '/'
-            args.concat(['--name', regex])
+            regex = "/" + Selective.selected_tests.join("|") + "/"
+            args.concat(["--name", regex])
           end
           super
         end
