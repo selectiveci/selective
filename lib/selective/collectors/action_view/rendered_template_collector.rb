@@ -29,13 +29,16 @@ module Selective
 
         def on_start
           @covered_templates_collection = Set.new
-          @seconds_adding_covered = 0
         end
 
         def add_covered_templates(*templates)
           t = Time.now
           @covered_templates_collection&.merge(templates)
           @seconds_adding_covered += (Time.now - t)
+        end
+
+        def clear_timer
+          @seconds_adding_covered = 0
         end
 
         def covered_files

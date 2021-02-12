@@ -13,6 +13,7 @@ module Selective
       config.enabled_collector_classes.each do |coverage_collector_class|
         coverage_collectors[coverage_collector_class] = coverage_collector_class.new
       end
+      @stats = Hash.new { 0 }
     end
 
     def start_recording_code_coverage
@@ -26,8 +27,13 @@ module Selective
 
       cleaned_coverage = {}.tap do |cleaned|
         coverage_collectors.each_value do |coverage_collector|
-          seconds = coverage_collector.seconds_adding_covered if coverage_collector.respond_to?(:seconds_adding_covered)
-          puts "#{coverage_collector.class} spent: #{seconds} seconds adding coverage data"
+
+          if coverage_collector.respond_to?(:seconds_adding_covered)
+            seconds = coverage_collector.seconds_adding_covered
+            @stats[coverage_collector.class.to_s] += seconds
+            coverage_collector.clear_timer
+          end
+
           coverage_collector.covered_files.each do |covered_file, coverage_data|
             next if Selective.exclude_file?(covered_file)
 
@@ -56,6 +62,9 @@ module Selective
       # deliver.
       return unless config.coverage_path.exist?
 
+      @stats.each do |class_name, seconds|
+        puts "#{class_name} spent: #{seconds} seconds adding coverage data"
+      end
       deliver_payload(payload)
     end
 

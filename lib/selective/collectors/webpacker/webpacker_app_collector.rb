@@ -17,13 +17,16 @@ module Selective
 
         def on_start
           @covered_globs = Set.new
-          @seconds_adding_covered = 0
         end
 
         def add_covered_globs(*globs)
           t = Time.now
           @covered_globs&.merge(globs)
           @seconds_adding_covered += (Time.now - t)
+        end
+
+        def clear_timer
+          @seconds_adding_covered = 0
         end
 
         def covered_files
