@@ -17,9 +17,9 @@ module Selective
           @covered_model_collection = Set.new
         end
 
-        def add_covered_models(*models)
+        def add_covered_model(model)
           t = Time.now
-          @covered_model_collection&.merge(models)
+          @covered_model_collection&.add(model.name)
           @seconds_adding_covered += (Time.now - t)
         end
 
@@ -29,8 +29,11 @@ module Selective
 
         def covered_files
           {}.tap do |coverage_data|
-            @covered_model_collection.each do |model|
-              file = ModelFileFinder.new.file_path(model)
+            @covered_model_collection.each do |model_name|
+              # clear memoization done in reader/writer collectors
+              Thread.current[(model_name + "-selective-selective").to_sym] = nil
+
+              file = ModelFileFinder.new.file_path(model_name)
               next if file.nil?
 
               coverage_data[file] = data
