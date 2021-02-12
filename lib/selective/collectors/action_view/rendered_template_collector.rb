@@ -6,6 +6,7 @@ module Selective
       class RenderedTemplateCollector
         class << self
           attr_reader :subscriber
+          attr_reader :seconds_adding_covered
 
           def subscribe(collector)
             @subscriber = ActiveSupport::Notifications.subscribe("!render_template.action_view") { |_name, _start, _finish, _id, payload|
@@ -27,10 +28,13 @@ module Selective
 
         def on_start
           @covered_templates_collection = Set.new
+          @seconds_adding_covered = 0
         end
 
         def add_covered_templates(*templates)
+          t = Time.now
           @covered_templates_collection&.merge(templates)
+          @seconds_adding_covered += (Time.now - t)
         end
 
         def covered_files

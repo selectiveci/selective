@@ -6,6 +6,8 @@ module Selective
   module Collectors
     module ActionView
       class AssetTagCollector
+        attr_reader :seconds_adding_covered
+
         def initialize
           ActiveSupport.on_load(:action_view) do
             prepend Selective::Collectors::ActionView::AssetTagHelper
@@ -14,10 +16,13 @@ module Selective
 
         def on_start
           @covered_assets_collection = Set.new
+          @seconds_adding_covered = 0
         end
 
         def add_covered_assets(*assets)
+          t = Time.now
           @covered_assets_collection&.merge(assets)
+          @seconds_adding_covered += (Time.now - t)
         end
 
         def covered_files

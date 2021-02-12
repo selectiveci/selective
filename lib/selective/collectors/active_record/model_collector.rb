@@ -6,16 +6,21 @@ module Selective
   module Collectors
     module ActiveRecord
       class ModelCollector
+        attr_reader :seconds_adding_covered
+
         def initialize
           set_hook
         end
 
         def on_start
           @covered_model_collection = Set.new
+          @seconds_adding_covered = 0
         end
 
         def add_covered_models(*models)
+          t = Time.now
           @covered_model_collection&.merge(models)
+          @seconds_adding_covered += (Time.now - t)
         end
 
         def covered_files

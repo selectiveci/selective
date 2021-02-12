@@ -26,6 +26,8 @@ module Selective
 
       cleaned_coverage = {}.tap do |cleaned|
         coverage_collectors.each_value do |coverage_collector|
+          seconds = coverage_collector.seconds_adding_covered if coverage_collector.respond_to?(:seconds_adding_covered)
+          puts "#{coverage_collector.class} spent: #{seconds} seconds adding coverage data"
           coverage_collector.covered_files.each do |covered_file, coverage_data|
             next if Selective.exclude_file?(covered_file)
 
