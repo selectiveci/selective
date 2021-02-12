@@ -86,7 +86,7 @@ RSpec.describe Selective::Collector do
     end
   end
 
-  context "#finalize" do
+  describe "#finalize" do
     subject { collector.finalize }
 
     let(:map) { {"./foo/bar_spec.rb[1,2]" => {"foo/bar.rb" => {"RSpec::Mocks::Double" => coverage_data}}} }
@@ -122,20 +122,41 @@ RSpec.describe Selective::Collector do
     end
   end
 
-  context "#payloads" do
+  describe "#payloads" do
     subject { collector.payloads }
 
+    let(:payload1) { (1..1000).map { |n| ["foo#{n}_spec", {"bar" => "baz"}] }.flatten }
+    let(:payload2) { ["foo1001_spec", {"bar" => "baz"}] }
+    let(:payloads) { Hash[*payload1, *payload2] }
+
     before do
-      collector.map_storage.dump({foo: {"bar" => "baz"}})
+      collector.map_storage.dump(payloads)
       allow(collector).to receive(:`).and_return("foobar")
     end
 
     it "returns the expected result" do
-      expect(subject).to eq([{call_graph_data: {foo: ["bar"]}, git_branch: "foobar", git_ref: "foobar"}])
+      result = subject
+
+      expect(result).to be_an(Array)
+      expect(result).to all(be_a(Hash))
+      expect(result.size).to equal(2)
+
+      result.each do |r|
+        expect(r.keys).to eql([:call_graph_data, :git_branch, :git_ref])
+        expect(r.fetch(:git_branch)).to eql("foobar")
+        expect(r.fetch(:git_ref)).to eql("foobar")
+        expect(r.fetch(:call_graph_data)).to be_a(Hash)
+      end
+
+      expect(result.first.fetch(:call_graph_data).size).to equal(1000)
+      expect(result.first.fetch(:call_graph_data).first).to eql(["foo1_spec", ["bar"]])
+      expect(result.first.fetch(:call_graph_data).keys.last).to eql("foo1000_spec")
+      expect(result.last.fetch(:call_graph_data).size).to equal(1)
+      expect(result.last.fetch(:call_graph_data)).to eql({"foo1001_spec" => ["bar"]})
     end
   end
 
-  context "#deliver_payloads" do
+  describe "#deliver_payloads" do
     subject { collector.deliver_payloads(payloads) }
 
     let(:payloads) { [{foo: "bar"}.to_json] }
@@ -149,7 +170,7 @@ RSpec.describe Selective::Collector do
     end
   end
 
-  context "#check_dump_threshold" do
+  describe "#check_dump_threshold" do
     subject { collector.check_dump_threshold }
 
     before do
@@ -172,6 +193,48 @@ RSpec.describe Selective::Collector do
         expect { subject }.not_to change { collector.map }
         expect(collector.map_storage).not_to have_received(:dump)
       end
+    end
+  end
+
+  describe "#git_branch" do
+    let(:cmd) { "git rev-parse --abbrev-ref HEAD" }
+    let(:branch) { "foo/\nbar/baz" }
+
+    it "git_branch" do
+      expect(collector).to receive(:`).with(cmd).and_return(branch)
+
+      result = collector.git_branch
+
+      expect(result).to eql("foo/bar/baz")
+    end
+
+    it "git_branch" do
+      empty = "" # keep linter from replacing gsub with delete
+
+      result = collector.git_branch
+
+      expect(result).to eql(`git branch --show-current`.gsub(/\n/, empty))
+    end
+  end
+
+  describe "#git_ref" do
+    let(:cmd) { "git rev-parse HEAD" }
+    let(:ref) { "\n\n\n563dec1f0db873b6c651fde7cb9f6dd4be37b4a5" }
+
+    it "git_ref" do
+      expect(collector).to receive(:`).with(cmd).and_return(ref)
+
+      result = collector.git_ref
+
+      expect(result).to eql("563dec1f0db873b6c651fde7cb9f6dd4be37b4a5")
+    end
+
+    it "git_branch" do
+      empty = "" # keep linter from replacing gsub with delete
+
+      result = collector.git_ref
+
+      expect(result).to eql(`git log -1 --format="%H"`.gsub(/\n/, empty))
     end
   end
 end
