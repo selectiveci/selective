@@ -381,4 +381,61 @@ RSpec.describe Selective do
       expect(result).to be false
     end
   end
+
+  describe ".run_example?" do
+    let(:file_path) { "./spec/foo/bar_spec.rb" }
+    let(:example) { double(:example, run: nil, id: "foobar", file_path: file_path) }
+
+    it "returns true if no selected tests" do
+      allow(described_class).to receive(:selected_tests).and_return([])
+
+      result = described_class.run_example?(example)
+
+      expect(result).to be true
+    end
+
+    it "returns true if example id was selected" do
+      allow(described_class).to receive(:selected_tests).and_return(["foobar"])
+
+      result = described_class.run_example?(example)
+
+      expect(result).to be true
+    end
+
+    it "returns true if example filepath was selected" do
+      allow(described_class).to receive(:selected_tests).and_return([file_path])
+
+      result = described_class.run_example?(example)
+
+      expect(result).to be true
+    end
+
+    it "returns false if example id/path were not selected" do
+      allow(described_class).to receive(:selected_tests).and_return(["baz"])
+
+      result = described_class.run_example?(example)
+
+      expect(result).to be false
+    end
+  end
+
+  describe ".skipped_test?" do
+    let(:example) { double(:example, run: nil, id: "foobar", file_path: nil) }
+
+    it "returns true if test was skipped" do
+      allow(described_class).to receive(:skipped_tests).and_return(["foobar"])
+
+      result = described_class.skipped_test?(example)
+
+      expect(result).to be true
+    end
+
+    it "returns false if test was not skipped" do
+      allow(described_class).to receive(:skipped_tests).and_return(["baz"])
+
+      result = described_class.skipped_test?(example)
+
+      expect(result).to be false
+    end
+  end
 end
