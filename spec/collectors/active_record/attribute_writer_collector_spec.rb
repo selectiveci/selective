@@ -49,7 +49,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeWriterCollector do
       end
 
       it "is called" do
-        expect(collector).to receive(:add_covered_models)
+        expect(collector).to receive(:add_covered_model)
         a = ADummy.new
         a.attr1 = "foobar"
       end
