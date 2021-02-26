@@ -20,7 +20,7 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderHelper do
     Selective.initialize_collectors
   end
 
-  describe "#add_covered_models" do
+  describe "#add_covered_model" do
     context "when selective is disabled" do
       let(:collector) { double }
 
@@ -47,14 +47,13 @@ RSpec.describe Selective::Collectors::ActiveRecord::AttributeReaderHelper do
 
     context "when selective is enabled", :full_setup do
       it "is called" do
-        expect_any_instance_of(Selective::Collectors::ActiveRecord::AttributeReaderCollector).to receive(:add_covered_models).with(ADummy)
+        expect_any_instance_of(Selective::Collectors::ActiveRecord::AttributeReaderCollector).to receive(:add_covered_model).with(CDummy)
 
-        a_dummy = ADummy.new
-        a_dummy.attr1
+        CDummy.new.attr1
       end
 
       it "is not called on attributes that don't exist" do
-        expect_any_instance_of(Selective::Collectors::ActiveRecord::AttributeReaderCollector).not_to receive(:add_covered_models)
+        expect_any_instance_of(Selective::Collectors::ActiveRecord::AttributeReaderCollector).not_to receive(:add_covered_model)
 
         a_dummy = ADummy.new
         expect { a_dummy.attr2 }.to raise_error(NoMethodError)
