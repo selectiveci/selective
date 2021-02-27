@@ -163,6 +163,8 @@ module Selective
     private
 
     def init_cucumber_dsl
+      # This line is necessary to ensure rb_language is defined
+      Cucumber::Glue::RegistryAndMore.new(Cucumber::Runtime.new, Cucumber::Configuration.new)
       Object.new.extend(Cucumber::Glue::Dsl)
     end
   end
