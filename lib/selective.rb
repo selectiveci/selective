@@ -124,17 +124,9 @@ module Selective
     def initialize_cucumber_test_selection
       dsl = init_cucumber_dsl
       dsl.AfterConfiguration do |config|
-        config.on_event :test_run_started do |event|
-          Selective.selected_tests = Selective::Selector.tests_from_diff
-        end
-      end
-
-      dsl.Around do |scenario, block|
-        if Selective.selected_tests.blank? || (Selective.selected_tests & [scenario.location.to_s]).any?
-          block.call
-        else
-          Selective.skipped_tests << scenario.location.to_s
-        end
+        options = config.instance_variable_get(:@options)
+        Selective.selected_tests = Selective::Selector.tests_from_diff
+        options[:paths] = Selective.selected_tests
       end
     end
 
