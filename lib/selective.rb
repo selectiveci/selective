@@ -103,7 +103,7 @@ module Selective
         end
 
         config.around(:example) do |example|
-          if run_example?(example)
+          if Selective.run_example?(example)
             example.run
           else
             Selective.skipped_tests << example.id
@@ -111,8 +111,12 @@ module Selective
         end
 
         config.after(:suite) do |suite|
-          suite.reporter.examples.delete_if(&method(:skipped_test?))
-          suite.reporter.pending_examples.delete_if(&method(:skipped_test?))
+          suite.reporter.examples.delete_if do |e|
+            Selective.skipped_test?(e)
+          end
+          suite.reporter.pending_examples.delete_if do |e|
+            Selective.skipped_test?(e)
+          end
         end
       end
     end
