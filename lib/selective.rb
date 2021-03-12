@@ -76,14 +76,9 @@ module Selective
         Selective.collector.write_code_coverage_artifact(scenario.location.to_s)
       end
 
-      # If Minitest is defined, its after_run hook will be called when running Cucumber.
-      # I'm not entirely sure why; does not affect RSpec. So we only define this hook
-      # if the Minitest hook is not defined, to avoid finalizing twice.
-      unless defined?(Minitest)
-        dsl.AfterConfiguration do |config|
-          config.on_event :test_run_finished do |event|
-            Selective.collector.finalize
-          end
+      dsl.AfterConfiguration do |config|
+        config.on_event :test_run_finished do |event|
+          Selective.collector.finalize
         end
       end
     end
