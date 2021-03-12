@@ -85,11 +85,6 @@ RSpec.describe Selective do
         described_class.config
       end
 
-      after do
-        described_class.instance_variable_set(:@config, nil)
-        described_class.instance_variable_set(:@collector, nil)
-      end
-
       it "sets collector ivar" do
         allow(described_class).to receive(:initialize_rspec_reporting_hooks)
 
@@ -101,6 +96,18 @@ RSpec.describe Selective do
 
       it "initializes rspec hooks" do
         expect(described_class).to receive(:initialize_rspec_reporting_hooks)
+
+        described_class.initialize_collectors
+      end
+
+      it "initializes minitest hooks" do
+        expect(described_class).to receive(:initialize_minitest_reporting_hooks)
+
+        described_class.initialize_collectors
+      end
+
+      it "initializes cucumber hooks" do
+        expect(described_class).to receive(:initialize_cucumber_reporting_hooks)
 
         described_class.initialize_collectors
       end

@@ -47,6 +47,7 @@ module Selective
       @collector = Collector.new(config)
       initialize_rspec_reporting_hooks if defined?(RSpec)
       initialize_minitest_reporting_hooks if defined?(Minitest)
+      initialize_cucumber_reporting_hooks if defined?(Cucumber)
     end
 
     def initialize_rspec_reporting_hooks
@@ -67,11 +68,27 @@ module Selective
       Selective::Minitest::Reporting.hook
     end
 
+    def initialize_cucumber_reporting_hooks
+      dsl = init_cucumber_dsl
+      dsl.Around do |scenario, block|
+        Selective.collector.start_recording_code_coverage
+        block.call
+        Selective.collector.write_code_coverage_artifact(scenario.location.to_s)
+      end
+
+      dsl.AfterConfiguration do |config|
+        config.on_event :test_run_finished do |event|
+          Selective.collector.finalize
+        end
+      end
+    end
+
     def initialize_test_selection
       @selected_tests = []
       @skipped_tests = []
       initialize_rspec_test_selection if defined?(RSpec)
       initialize_minitest_test_selection if defined?(Minitest)
+      initialize_cucumber_test_selection if defined?(Cucumber)
     end
 
     def initialize_rspec_test_selection
@@ -103,6 +120,15 @@ module Selective
       Selective::Minitest::Selection.hook
     end
 
+    def initialize_cucumber_test_selection
+      dsl = init_cucumber_dsl
+      dsl.AfterConfiguration do |config|
+        options = config.instance_variable_get(:@options)
+        Selective.selected_tests = Selective::Selector.tests_from_diff
+        options[:paths] = Selective.selected_tests
+      end
+    end
+
     def start_coverage
       return unless report_callgraph?
 
@@ -131,6 +157,16 @@ module Selective
 
     def skipped_test?(example)
       Selective.skipped_tests.include?(example.id)
+    end
+
+    private
+
+    def init_cucumber_dsl
+      # This is necessary to ensure rb_language is defined
+      unless Cucumber::Glue::Dsl.instance_variable_get(:@rb_language).present?
+        Cucumber::Glue::RegistryAndMore.new(Cucumber::Runtime.new, Cucumber::Configuration.new)
+      end
+      Object.new.extend(Cucumber::Glue::Dsl)
     end
   end
 end

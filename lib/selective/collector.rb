@@ -10,6 +10,7 @@ module Selective
       @map_storage = Selective::Storage.new(config.coverage_path)
       @map_storage.clear!
       @map = {}
+      @finalized = false
       config.enabled_collector_classes.each do |coverage_collector_class|
         coverage_collectors[coverage_collector_class] = coverage_collector_class.new
       end
@@ -43,6 +44,7 @@ module Selective
     end
 
     def finalize
+      return if @finalized
       return unless Selective.report_callgraph?
 
       if map.any?
@@ -55,6 +57,7 @@ module Selective
       return unless config.coverage_path.exist?
 
       deliver_payloads(payloads)
+      @finalized = true
     end
 
     def payloads
