@@ -12,10 +12,18 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     yarn \
     locales \
-    git \
     netcat \
     vim \
     sudo
+
+# Install newer version of git from Debian testing
+RUN curl -O http://ftp.us.debian.org/debian/pool/main/g/git/git-man_2.30.2-1_all.deb && \
+    dpkg -i git-man_2.30.2-1_all.deb && \
+    apt-get install -yf
+
+RUN curl -O http://ftp.us.debian.org/debian/pool/main/g/git/git_2.30.2-1_amd64.deb && \
+    dpkg -i git_2.30.2-1_amd64.deb && \
+    apt-get install -yf
 
 ###############################################################################
 # Non-root user
