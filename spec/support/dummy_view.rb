@@ -1,1 +1,1 @@
-class DummyView < ActionView::Base; end
+DummyView = ActionView::Base.with_empty_template_cache
