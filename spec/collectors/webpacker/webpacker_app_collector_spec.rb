@@ -20,7 +20,7 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
 
   describe "#add_covered_globs" do
     context "when selective is disabled" do
-      let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
+      let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}, @controller) }
 
       before do
         allow(Selective::Collectors::Webpacker::WebpackerAppCollector).to receive(:new) do
@@ -43,7 +43,7 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
     end
 
     context "when selective is enabled", :full_setup do
-      let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
+      let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}, @controller) }
 
       before do
         allow(Selective).to receive(:report_callgraph?).and_return true
@@ -67,7 +67,7 @@ RSpec.describe Selective::Collectors::Webpacker::WebpackerAppCollector do
   end
 
   describe "#covered_files" do
-    let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
+    let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}, @controller) }
 
     before do
       allow(Selective).to receive(:report_callgraph?).and_return true

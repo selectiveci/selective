@@ -30,7 +30,7 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagCollector do
   end
 
   describe "#add_covered_assets" do
-    let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
+    let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}, @controller) }
     let(:covered_assets_collection) { Selective.coverage_collectors[described_class].instance_variable_get("@covered_assets_collection") }
 
     it "adds assets to @covered_assets_collection", :init_view_and_add_assets do
@@ -40,7 +40,7 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagCollector do
   end
 
   describe "#covered_files" do
-    let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
+    let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}, @controller) }
     let(:collector) { Selective.coverage_collectors[described_class] }
     let(:sprocket_asset_double) { double }
 
