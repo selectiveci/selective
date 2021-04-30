@@ -22,7 +22,7 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagHelper do
     end
 
     context "when selective is disabled" do
-      let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
+      let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}, @controller) }
 
       before do
         allow(Selective::Collectors::ActionView::AssetTagCollector).to receive(:new) do
@@ -46,7 +46,7 @@ RSpec.describe Selective::Collectors::ActionView::AssetTagHelper do
     end
 
     context "when selective is enabled" do
-      let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}) }
+      let(:view) { DummyView.new(::ActionView::LookupContext.new([]), {}, @controller) }
 
       it "is not called" do
         view.extend(Selective::Collectors::ActionView::AssetTagHelper)

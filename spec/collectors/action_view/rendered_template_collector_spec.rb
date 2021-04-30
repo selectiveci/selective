@@ -17,7 +17,7 @@ RSpec.describe Selective::Collectors::ActionView::RenderedTemplateCollector do
       it "is not called" do
         expect(collector).not_to receive(:add_covered_templates)
 
-        view = DummyView.new(::ActionView::LookupContext.new([view_path]), {})
+        view = DummyView.new(::ActionView::LookupContext.new([view_path]), {}, @controller)
         view.render(template: "foo")
       end
     end
@@ -38,13 +38,13 @@ RSpec.describe Selective::Collectors::ActionView::RenderedTemplateCollector do
 
       it "is called" do
         mock_collector = double
-        view = DummyView.new(::ActionView::LookupContext.new([view_path]), {})
+        view = DummyView.new(::ActionView::LookupContext.new([view_path]), {}, @controller)
 
-        expect(mock_collector).to receive(:add_covered_templates).with(view.lookup_context.find_template("foo.html.erb").identifier)
+        expect(mock_collector).to receive(:add_covered_templates).with(view.lookup_context.find_template("foo").identifier)
         described_class.subscribe(mock_collector)
         expect(described_class.subscriber).not_to be_nil
 
-        view.render(template: "foo.html.erb")
+        view.render(template: "foo")
       end
     end
   end
@@ -60,8 +60,8 @@ RSpec.describe Selective::Collectors::ActionView::RenderedTemplateCollector do
     end
 
     it "keeps track of covered files" do
-      view = DummyView.new(::ActionView::LookupContext.new([view_path]), {})
-      view.render(template: "foo.html.erb")
+      view = DummyView.new(::ActionView::LookupContext.new([view_path]), {}, @controller)
+      view.render(template: "foo")
 
       covered_files = collector.covered_files
       expect(covered_files.length).to eq(1)
