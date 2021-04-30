@@ -1,4 +1,4 @@
-FROM ruby:2.6.6
+FROM ruby:2.7.3
 
 LABEL maintainer="Benjamin Wood <ben@hint.io>"
 
